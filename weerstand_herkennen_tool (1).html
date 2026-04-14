@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weerstand (H)erkennen – VvE Belang</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:      #1A2E4A;
+  --navy-mid:  #243d5e;
+  --orange:    #E8693A;
+  --cream:     #F7F3EE;
+  --cream-dk:  #EDE7DC;
+  --green:     #2E7D4F;
+  --red:       #C0392B;
+  --yellow:    #D4A017;
+  --sky:       #E8F2FA;
+  --muted:     #6B7A8D;
+  --white:     #ffffff;
+  --r:         16px;
+  --r-sm:      10px;
+  --shadow:    0 4px 24px rgba(26,46,74,.10);
+  --shadow-lg: 0 8px 40px rgba(26,46,74,.18);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--navy); min-height: 100vh; }
+
+/* HEADER */
+.header { background: var(--navy); padding: 24px 40px; display: flex; align-items: center; gap: 18px; }
+.logo { width: 42px; height: 42px; background: var(--orange); border-radius: 10px; display: grid; place-items: center; flex-shrink: 0; }
+.logo svg { width: 22px; height: 22px; fill: white; }
+.header-copy h1 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: white; line-height: 1.2; }
+.header-copy p  { font-size: .78rem; color: rgba(255,255,255,.55); margin-top: 2px; font-weight: 300; }
+
+/* WRAP */
+.wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+/* INTRO */
+.kicker { display: inline-block; background: var(--orange); color: white; font-size: .7rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 18px; }
+.intro h2 { font-family: 'DM Serif Display', serif; font-size: 2.2rem; line-height: 1.2; color: var(--navy); margin-bottom: 12px; }
+.intro p { font-size: .98rem; color: var(--muted); line-height: 1.7; font-weight: 300; max-width: 560px; margin-bottom: 40px; }
+
+/* SECTION LABEL */
+.section-label { font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--orange); margin-bottom: 20px; }
+
+/* ── DEEL 1: VIER TECHNIEKEN ── */
+.techniques { margin-bottom: 64px; }
+
+.technique-item {
+  background: white; border-radius: var(--r); box-shadow: var(--shadow);
+  margin-bottom: 16px; overflow: hidden;
+}
+
+.technique-header {
+  display: flex; align-items: center; gap: 0;
+}
+
+.technique-num {
+  width: 56px; min-height: 64px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: white; font-weight: 400;
+  flex-shrink: 0;
+}
+
+.technique-title-wrap {
+  flex: 1; padding: 18px 20px;
+  border-bottom: 1px solid var(--cream-dk);
+}
+.technique-title { font-weight: 600; font-size: 1rem; color: var(--navy); margin-bottom: 2px; }
+.technique-tagline { font-size: .82rem; color: var(--muted); font-weight: 300; }
+
+/* CHAT CONVERSATION */
+.conversation {
+  padding: 24px 24px 20px;
+  background: #F9F7F5;
+  border-top: 1px solid var(--cream-dk);
+}
+
+.chat-label {
+  font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.chat-label::after { content: ''; flex: 1; height: 1px; background: var(--cream-dk); }
+
+.bubble-row {
+  display: flex; margin-bottom: 12px; align-items: flex-end; gap: 10px;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.bubble-row.show { opacity: 1; transform: translateY(0); }
+.bubble-row.bewoner { justify-content: flex-start; }
+.bubble-row.bestuurder { justify-content: flex-end; }
+
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; flex-shrink: 0;
+}
+.avatar.b { background: #E8D5C4; }
+.avatar.vve { background: var(--navy); color: white; font-size: .65rem; font-weight: 700; }
+
+.bubble {
+  max-width: 75%; padding: 12px 16px;
+  border-radius: 16px; font-size: .88rem; line-height: 1.6; font-weight: 300;
+  position: relative;
+}
+.bubble.bewoner { background: white; color: var(--navy); border-radius: 4px 16px 16px 16px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.bubble.bestuurder-wrong { background: #FDF2F2; color: var(--navy); border-radius: 16px 4px 16px 16px; border: 1px solid #f5c6c0; }
+.bubble.bestuurder-right { background: var(--navy); color: white; border-radius: 16px 4px 16px 16px; }
+
+.bubble-name { font-size: .68rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 4px; opacity: .6; }
+
+.bubble-tag {
+  display: inline-block; font-size: .65rem; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 4px; margin-top: 6px;
+}
+.tag-wrong { background: #fdd; color: var(--red); }
+.tag-right { background: rgba(255,255,255,.2); color: rgba(255,255,255,.8); }
+
+.technique-tip {
+  background: var(--sky); border-left: 3px solid var(--navy);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: 12px 16px; margin-top: 16px;
+  font-size: .84rem; line-height: 1.6; color: var(--navy);
+}
+.technique-tip strong { font-weight: 600; }
+
+/* ── DEEL 2: ROLLENSPEL ── */
+.rollenspel { margin-bottom: 64px; }
+
+.rp-intro {
+  font-size: .95rem; color: var(--muted); line-height: 1.7; font-weight: 300; margin-bottom: 28px;
+}
+
+/* SCENARIO SELECT */
+.scenario-select { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+.sc-btn {
+  background: white; border: 2px solid var(--cream-dk); border-radius: var(--r-sm);
+  padding: 10px 18px; font-family: 'DM Sans', sans-serif;
+  font-size: .85rem; font-weight: 500; color: var(--muted);
+  cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.sc-btn:hover { border-color: var(--orange); color: var(--navy); }
+.sc-btn.active { border-color: var(--navy); background: var(--sky); color: var(--navy); }
+
+/* ROLLENSPEL CARD */
+.rp-card { background: white; border-radius: var(--r); box-shadow: var(--shadow-lg); overflow: hidden; }
+
+.rp-header { background: var(--navy); padding: 24px 28px; }
+.rp-header h3 { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: white; margin-bottom: 4px; }
+.rp-header p { font-size: .85rem; color: rgba(255,255,255,.6); font-weight: 300; }
+
+/* PROGRESS */
+.rp-progress { padding: 16px 28px; background: var(--cream); border-bottom: 1px solid var(--cream-dk); display: flex; align-items: center; gap: 12px; }
+.rp-steps { display: flex; gap: 6px; }
+.rp-step { width: 28px; height: 6px; border-radius: 3px; background: var(--cream-dk); transition: background .3s; }
+.rp-step.done { background: var(--green); }
+.rp-step.active { background: var(--orange); }
+.rp-progress-text { font-size: .8rem; color: var(--muted); font-weight: 300; }
+
+/* RP BODY */
+.rp-body { padding: 28px; }
+
+/* Bewoner bubble in RP */
+.rp-bewoner {
+  background: #F9F7F5; border-radius: var(--r-sm);
+  padding: 18px 20px; margin-bottom: 24px;
+  display: flex; gap: 14px; align-items: flex-start;
+  border-left: 3px solid var(--cream-dk);
+}
+.rp-bewoner-avatar { font-size: 1.8rem; flex-shrink: 0; }
+.rp-bewoner-name { font-size: .68rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+.rp-bewoner-text { font-size: .95rem; line-height: 1.7; color: var(--navy); font-weight: 400; font-style: italic; }
+
+/* QUESTION */
+.rp-question { font-size: .88rem; color: var(--muted); font-weight: 500; margin-bottom: 14px; }
+
+/* OPTIONS */
+.rp-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.rp-opt {
+  background: var(--cream); border: 2px solid transparent;
+  border-radius: var(--r-sm); padding: 14px 18px;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  font-size: .9rem; color: var(--navy); line-height: 1.5;
+  transition: all .2s; text-align: left; font-weight: 400;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.rp-opt:hover:not(:disabled) { border-color: var(--orange); background: white; }
+.rp-opt.correct   { background: #EAF5EE; border-color: var(--green); }
+.rp-opt.incorrect { background: #FDF2F2; border-color: var(--red); }
+.rp-opt.neutral   { opacity: .5; cursor: default; }
+.rp-opt:disabled  { cursor: default; }
+
+.opt-letter {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--cream-dk); color: var(--muted);
+  font-size: .78rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+  transition: background .2s, color .2s;
+}
+.rp-opt.correct   .opt-letter { background: var(--green); color: white; }
+.rp-opt.incorrect .opt-letter { background: var(--red); color: white; }
+
+/* FEEDBACK */
+.rp-feedback {
+  border-radius: var(--r-sm); padding: 16px 18px;
+  font-size: .88rem; line-height: 1.65; display: none;
+  animation: fadeIn .3s ease;
+}
+.rp-feedback.visible { display: block; }
+.rp-feedback.good { background: #EAF5EE; border-left: 3px solid var(--green); }
+.rp-feedback.bad  { background: #FDF2F2; border-left: 3px solid var(--red); }
+.rp-feedback .fb-title { font-weight: 600; margin-bottom: 4px; }
+.rp-feedback .fb-technique { font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--orange); margin-top: 8px; }
+
+/* NEXT BUTTON */
+.btn-next {
+  display: none; margin-top: 16px;
+  background: var(--navy); color: white;
+  border: none; border-radius: var(--r-sm);
+  padding: 12px 24px; font-family: 'DM Sans', sans-serif;
+  font-size: .88rem; font-weight: 600; cursor: pointer;
+  transition: background .2s;
+  align-items: center; gap: 8px;
+}
+.btn-next.visible { display: inline-flex; }
+.btn-next:hover { background: var(--navy-mid); }
+
+/* SCORE SCREEN */
+.score-screen {
+  display: none; text-align: center; padding: 40px 28px;
+  animation: fadeIn .4s ease;
+}
+.score-screen.visible { display: block; }
+.score-trophy { font-size: 3.5rem; margin-bottom: 12px; }
+.score-screen h3 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: var(--navy); margin-bottom: 8px; }
+.score-screen p { font-size: .95rem; color: var(--muted); line-height: 1.7; font-weight: 300; max-width: 440px; margin: 0 auto 24px; }
+.score-badge {
+  display: inline-block; background: var(--navy); color: white;
+  font-size: 1.4rem; font-weight: 700; padding: 12px 28px;
+  border-radius: var(--r-sm); margin-bottom: 24px;
+}
+.score-techniques { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+.sc-tag { background: var(--cream); border-radius: 50px; padding: 6px 14px; font-size: .8rem; color: var(--navy); font-weight: 500; }
+
+.btn-retry {
+  background: var(--orange); color: white; border: none;
+  border-radius: var(--r-sm); padding: 13px 26px;
+  font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 600;
+  cursor: pointer; transition: background .2s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-retry:hover { background: #d4592e; }
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .header { padding: 18px; }
+  .wrap { padding: 28px 16px 60px; }
+  .intro h2 { font-size: 1.6rem; }
+  .bubble { max-width: 85%; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="none" stroke="white" stroke-width="1.5"/></svg>
+  </div>
+  <div class="header-copy">
+    <h1>Weerstand (H)erkennen</h1>
+    <p>VvE Belang · E-learning Communicatie in de VvE · Hoofdstuk 5</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="intro">
+    <span class="kicker">Omgaan met weerstand</span>
+    <h2>Weerstand is geen obstakel — het is een signaal</h2>
+    <p>Bij grotere projecten stuit je als VvE-bestuurder regelmatig op weerstand. Vier bewezen technieken helpen je om die weerstand te erkennen en om te buigen. Leer ze kennen, en oefen ze daarna zelf.</p>
+  </div>
+
+  <!-- ══ DEEL 1: VIER TECHNIEKEN ══ -->
+  <div class="techniques">
+    <div class="section-label">Deel 1 — Vier technieken om weerstand om te buigen</div>
+    <div id="techniqueList"></div>
+  </div>
+
+  <!-- ══ DEEL 2: ROLLENSPEL ══ -->
+  <div class="rollenspel">
+    <div class="section-label">Deel 2 — Oefen het zelf: rollenspel</div>
+    <p class="rp-intro">Je bent VvE-bestuurder. Een bewoner reageert met weerstand. Kies hoe je reageert — en ontdek welke aanpak het beste werkt.</p>
+
+    <div class="scenario-select" id="scenarioSelect"></div>
+    <div class="rp-card" id="rpCard"></div>
+  </div>
+
+</main>
+
+<script>
+// ── TECHNIEKEN DATA ──────────────────────────────────────────────────────────
+
+const techniques = [
+  {
+    num: "1",
+    color: "#2E86AB",
+    title: "Weerstand erkennen",
+    tagline: "Laat zien dat je de ander serieus neemt",
+    chat: [
+      { role: "bewoner", text: "Ik snap niet waarom we dit moeten doen. Dit kost ons alleen maar geld!" },
+      { role: "wrong", label: "Verkeerde reactie", text: "Dat klopt niet. Dit is juist een investering die zich terugbetaalt.", tag: "Weerstand negeren" },
+      { role: "right", label: "Goede reactie", text: "Ik begrijp dat dit een grote stap voelt, zeker als de kosten meteen opvallen. Dat is een logische zorg. Kunnen we die samen even doorlopen?", tag: "✓ Erkenning" },
+    ],
+    tip: "Erken de weerstand <strong>vóórdat</strong> je met argumenten komt. Zinnen als <em>"Ik begrijp dat het lastig is"</em> of <em>"Dat is een logische zorg"</em> verlagen de spanning direct. De ander voelt zich gehoord — en staat dan veel meer open voor uitleg."
+  },
+  {
+    num: "2",
+    color: "#E8693A",
+    title: "Kleine babystapjes",
+    tagline: "Maak de eindstreep minder ver weg",
+    chat: [
+      { role: "bewoner", text: "Zonnepanelen op het hele dak? Dat is veel te groot. Dat gaat me nooit lukken." },
+      { role: "wrong", label: "Verkeerde reactie", text: "We moeten dit gewoon doen, de subsidie verloopt anders.", tag: "Te veel druk" },
+      { role: "right", label: "Goede reactie", text: "Laten we beginnen met één stap: een vrijblijvende offerte aanvragen. Geen verplichtingen, gewoon kijken wat het kost. Zou dat al haalbaar zijn?", tag: "✓ Kleine stap" },
+    ],
+    tip: "Deel het einddoel op in kleine, behapbare stappen. Wie ja zegt tegen een kleine stap, zegt makkelijker ja bij de volgende. <strong>Maximaal drie keuzes aanbieden</strong> werkt beter dan een open vraag — te veel opties zorgen voor keuzestress."
+  },
+  {
+    num: "3",
+    color: "#2E7D4F",
+    title: "Keuzevrijheid bieden",
+    tagline: "Niemand houdt van 'moeten'",
+    chat: [
+      { role: "bewoner", text: "Jullie beslissen altijd alles zomaar. Ik wil ook iets te zeggen hebben." },
+      { role: "wrong", label: "Verkeerde reactie", text: "Dit is nu eenmaal de enige optie. We hebben geen andere keuze.", tag: "Geen ruimte" },
+      { role: "right", label: "Goede reactie", text: "Helemaal begrijpelijk. We kunnen de werkzaamheden starten in mei of in september — wat past beter bij u? En heeft u een voorkeur voor aannemer A of B?", tag: "✓ Keuzevrijheid" },
+    ],
+    tip: "Als je niet kunt kiezen <em>óf</em> iets gedaan wordt, geef dan keuzevrijheid in <em>hoe</em> of <em>wanneer</em>. Zelfs een kleine keuze geeft mensen het gevoel dat ze er invloed op hebben — en vermindert weerstand aanzienlijk."
+  },
+  {
+    num: "4",
+    color: "#A23B72",
+    title: "Laten ervaren",
+    tagline: "Zien is geloven — en overtuigender dan woorden",
+    chat: [
+      { role: "bewoner", text: "Ik snap niet hoe zo’n laadpaal er dan precies uitziet. Ik ben bang dat het er lelijk uit gaat zien." },
+      { role: "wrong", label: "Verkeerde reactie", text: "Dat valt allemaal wel mee hoor, vertrouwt u ons maar.", tag: "Niet concreet" },
+      { role: "right", label: "Goede reactie", text: "Begrijpelijk! We regelen een proefopstelling bij de ingang, dan kunt u het zelf zien en aanraken. We nodigen iedereen uit voor een kijkmoment — zonder verplichtingen.", tag: "✓ Ervaren" },
+    ],
+    tip: "Persoonlijke ervaringen zijn <strong>veel overtuigender</strong> dan informatie in een nieuwsbrief. Organiseer een proefopstelling, een bezoek aan een vergelijkbaar project of een demonstratie. Mensen die het zien, steunen het vaker."
+  }
+];
+
+// ── ROLLENSPEL DATA ──────────────────────────────────────────────────────────
+
+const scenarios = [
+  {
+    emoji: "🔋",
+    title: "De laadpalen",
+    context: "Het bestuur wil laadpalen plaatsen op de parkeerplaats. Een bewoner reageert bij de ALV.",
+    steps: [
+      {
+        bewoner: "Dit gaat mij weer geld kosten terwijl ik helemaal geen elektrische auto heb. Waarom moet ik meebetalen aan iets wat ik nooit gebruik?",
+        question: "Hoe reageer je als eerste?",
+        options: [
+          { text: "Iedereen in de VvE betaalt mee aan gezamenlijke voorzieningen. Dat is nu eenmaal de regel.", correct: false, feedback: "Dit is technisch juist maar negeert de emotie volledig. De bewoner voelt zich niet gehoord en zal harder gaan tegenwerken." },
+          { text: "Ik begrijp dat dit oneerlijk voelt als je zelf geen elektrische auto rijdt. Dat is een logische reactie. Mogen we uitleggen hoe de kosten zijn verdeeld?", correct: true, feedback: "Goed! Je erkent de emotie eerst, zonder je te verdedigen. Dit is techniek 1: weerstand erkennen. De bewoner staat nu open voor uitleg.", technique: "Weerstand erkennen" },
+          { text: "Nou, als u geen elektrische auto wilt, is dat uw keuze, maar de rest wel.", correct: false, feedback: "Dit is aanvallend en zet de bewoner in het defensief. Dit escaleert de weerstand in plaats van hem te verminderen." },
+        ]
+      },
+      {
+        bewoner: "Goed, ik hoor het. Maar ik snap nog steeds niet wat we hier precies mee beslissen vanavond. Ik voel me overvallen.",
+        question: "De bewoner voelt zich overvallen. Wat doe je?",
+        options: [
+          { text: "We stemmen vanavond over het totale budget van €45.000 voor de installatie van 12 laadpalen.", correct: false, feedback: "Te veel, te snel. De bewoner heeft net aangegeven zich overvallen te voelen. Door direct met het grote bedrag te komen vergroot je de weerstand." },
+          { text: "Dan stellen we de stemming uit tot volgende vergadering.", correct: false, feedback: "Dit lost niets op — het stelt alleen het probleem uit. De weerstand blijft bestaan en groeit mogelijk." },
+          { text: "Begrijpelijk. Laten we vanavond alleen beslissen of we een offerte aanvragen — dat verplicht ons nergens toe. De echte beslissing over kosten komt pas daarna.", correct: true, feedback: "Uitstekend! Dit is techniek 2: kleine babystapjes. Je maakt de stap klein en vrijblijvend. De bewoner kan makkelijker ja zeggen tegen iets kleins.", technique: "Kleine babystapjes" },
+        ]
+      },
+      {
+        bewoner: "Oké, een offerte aanvragen vind ik prima. Maar ik wil wel weten: kunnen we ook kiezen hoeveel laadpalen er komen?",
+        question: "De bewoner wil inspraak. Hoe geef je hem dat?",
+        options: [
+          { text: "Dat bepalen we op basis van de offerte. Daar heeft u verder geen invloed op.", correct: false, feedback: "Dit neemt de keuzevrijheid weg die de bewoner juist zocht. Hij zal zich buitengesloten voelen." },
+          { text: "Absoluut. Na de offerte kunt u kiezen: we beginnen met 4 laadpalen, 8, of het volledige aantal van 12. U kiest mee.", correct: true, feedback: "Perfect! Dit is techniek 3: keuzevrijheid bieden. Door concrete opties te geven (geen open vraag) geef je inspraak zonder het proces te vertragen.", technique: "Keuzevrijheid bieden" },
+          { text: "Eigenlijk niet, want we moeten de parkeerplaats in één keer aanpakken voor de beste prijs.", correct: false, feedback: "Praktisch misschien begrijpelijk, maar je neemt hier keuzevrijheid weg zonder alternatief aan te bieden." },
+        ]
+      }
+    ]
+  },
+  {
+    emoji: "🎨",
+    title: "De schilderbeurt",
+    context: "Het gebouw moet geschilderd worden. Het bestuur heeft al een aannemer geselecteerd. Een bewoner is het niet eens.",
+    steps: [
+      {
+        bewoner: "Ik vind het maar niks dat jullie zomaar een aannemer hebben uitgekozen zonder ons te vragen. Ik ken iemand die het voor de helft van de prijs doet.",
+        question: "De bewoner voelt zich buitengesloten. Wat is je eerste reactie?",
+        options: [
+          { text: "We hebben drie offertes aangevraagd en de beste gekozen. Dat is onze taak als bestuur.", correct: false, feedback: "Procedureel correct, maar de bewoner voelt zich niet gehoord. Je verdedigt je direct zonder de emotie te erkennen." },
+          { text: "Ik snap dat het vervelend voelt om hier niet bij betrokken te zijn geweest. Dat gevoel neem ik serieus. Mogen we uitleggen hoe we te werk zijn gegaan?", correct: true, feedback: "Goed! Erkenning eerst. De bewoner voelt zich nu gehoord en staat open voor uitleg. Dit is techniek 1: weerstand erkennen.", technique: "Weerstand erkennen" },
+          { text: "Uw aanbeveling is waarschijnlijk niet gecertificeerd en voldoet niet aan onze eisen.", correct: false, feedback: "Dit is aanvallend en diskwalificeert de bewoner direct. Dat zorgt voor een verdedigingsreactie en meer weerstand." },
+        ]
+      },
+      {
+        bewoner: "Oké, maar ik wil toch wel dat mijn aannemer een kans krijgt. Hij is betrouwbaar en goedkoper.",
+        question: "De bewoner wil zijn aannemer betrekken. Hoe ga je hiermee om?",
+        options: [
+          { text: "Als uw aannemer aan onze eisen voldoet, mogen we hem een offerte laten indienen voor de volgende klus.", correct: true, feedback: "Slim! Je geeft keuzevrijheid en betrokkenheid, zonder de huidige beslissing terug te draaien. Dit combineert techniek 3 (keuzevrijheid) met kleine stap vooruit.", technique: "Keuzevrijheid bieden" },
+          { text: "Dat is nu te laat, de keuze is al gemaakt.", correct: false, feedback: "Dit is hard en sluit de deur. De bewoner voelt zich afgewezen en de weerstand groeit." },
+          { text: "We moeten dan opnieuw beginnen met de selectieprocedure, dat kost maanden.", correct: false, feedback: "Je stelt het als onmogelijk voor. Dat frustreert de bewoner verder zonder een alternatief te bieden." },
+        ]
+      },
+      {
+        bewoner: "Ik wil ook weten of ik de kleur kan meebepalen. Onze vorige kleur was veel te donker.",
+        question: "De bewoner wil inspraak over de kleur. Hoe geef je hem dat op een beheersbare manier?",
+        options: [
+          { text: "De kleur is al bepaald in overleg met de beheerder.", correct: false, feedback: "Dit neemt de betrokkenheid weg die de bewoner zoekt. Hij zal zich opnieuw buitengesloten voelen." },
+          { text: "Goed idee — we organiseren een kijkmoment met kleurstalen volgende week. Dan kan iedereen zien en voelen wat de opties zijn, en kiezen uit drie varianten.", correct: true, feedback: "Uitstekend! Dit combineert techniek 3 (keuzevrijheid, drie opties) met techniek 4 (laten ervaren). Kleurstalen zien en aanraken is overtuigender dan een beschrijving.", technique: "Laten ervaren + Keuzevrijheid" },
+          { text: "U kunt een kleur voorstellen en we kijken of de meerderheid het ermee eens is.", correct: false, feedback: "Te open — dit kan leiden tot eindeloos overleg. Beter is het om concrete opties voor te leggen." },
+        ]
+      }
+    ]
+  },
+  {
+    emoji: "☀️",
+    title: "De zonnepanelen",
+    context: "Het bestuur wil zonnepanelen op het dak plaatsen. Er is een informatiebrief verstuurd maar de weerstand is groot.",
+    steps: [
+      {
+        bewoner: "Ik heb die brief gelezen maar ik snap er niks van. Jullie gebruiken allemaal moeilijke termen. Ik wil gewoon weten wat het mij kost.",
+        question: "De bewoner is gefrustreerd over de communicatie. Hoe reageer je?",
+        options: [
+          { text: "Alles staat in de brief beschreven. Heeft u hem goed gelezen?", correct: false, feedback: "Dit klinkt verwijtend. De bewoner voelt zich dom gemaakt en zal nog meer weerstand ontwikkelen." },
+          { text: "Dat snap ik volkomen — technische brieven zijn niet altijd even duidelijk. Wat ik u direct kan zeggen: uw bijdrage wordt €38 per maand minder op de servicekosten. Wilt u meer weten?", correct: true, feedback: "Perfect! Je erkent de frustratie (techniek 1), vertaalt het naar wat het direct betekent, en nodigt uit voor meer zonder te overweldigen.", technique: "Weerstand erkennen" },
+          { text: "We hebben een uitgebreide toelichting opgesteld. Die kunt u op het portaal vinden.", correct: false, feedback: "Je verwijst door zonder het probleem op te lossen. De bewoner wil nu antwoord, niet een verwijzing." },
+        ]
+      },
+      {
+        bewoner: "€38 minder per maand klinkt goed. Maar ik woon hier maar tijdelijk. Dit soort grote investeringen zijn niks voor mij.",
+        question: "De bewoner woont tijdelijk en ziet de lange termijn niet. Wat zeg je?",
+        options: [
+          { text: "Dan profiteert u alsnog van lagere servicekosten zolang u hier woont.", correct: true, feedback: "Goed! Je vertaalt het voordeel naar zijn situatie — niet de lange termijn, maar het directe voordeel nu. Dit verlaagt de drempel.", technique: "Kleine babystapjes" },
+          { text: "Zonnepanelen verhogen ook de woningwaarde als u later wilt verkopen.", correct: false, feedback: "Dit is een geldig punt maar niet wat de bewoner hoorde — hij woont hier tijdelijk, niet om te investeren. Je mist zijn echte zorg." },
+          { text: "Dat is jammer, maar de meerderheid beslist toch.", correct: false, feedback: "Dit is correct maar voelt afwijzend. De bewoner zal zich niet gehoord voelen en tegenstemmen." },
+        ]
+      },
+      {
+        bewoner: "Oké, ik snap de voordelen nu beter. Maar hoe weet ik of die panelen er straks niet verschrikkelijk uitzien op ons dak?",
+        question: "De bewoner maakt zich zorgen over het uiterlijk. Hoe neem je die zorg weg?",
+        options: [
+          { text: "De architect heeft dit goedgekeurd, dus het zal er prima uitzien.", correct: false, feedback: "Dit is een autoriteitsargument maar biedt de bewoner geen eigen beleving. ‘Vertrouw ons maar' werkt zelden bij visuele zorgen." },
+          { text: "We begrijpen die zorg. We regelen dat u een visualisatie kunt zien van hoe het eruit ziet op ons specifieke dak — en als u wilt, bezoeken we samen een vergelijkbaar gebouw in de buurt.", correct: true, feedback: "Uitstekend! Dit is techniek 4: laten ervaren. Een visualisatie en een bezoek ter plaatse zijn veel overtuigender dan welke beschrijving ook.", technique: "Laten ervaren" },
+          { text: "Dat kunt u in de folder zien die we hebben meegestuurd.", correct: false, feedback: "Een folder is passief. De bewoner heeft een actieve ervaring nodig om echt overtuigd te raken van het uiterlijk." },
+        ]
+      }
+    ]
+  }
+];
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let rpState = {
+  scenarioIdx: 0,
+  stepIdx: 0,
+  answered: false,
+  score: 0,
+  usedTechniques: []
+};
+
+// ── RENDER TECHNIQUES ────────────────────────────────────────────────────────
+function renderTechniques() {
+  const container = document.getElementById('techniqueList');
+  container.innerHTML = techniques.map((t, i) => `
+    <div class="technique-item">
+      <div class="technique-header">
+        <div class="technique-num" style="background:${t.color}">${t.num}</div>
+        <div class="technique-title-wrap">
+          <div class="technique-title">${t.title}</div>
+          <div class="technique-tagline">${t.tagline}</div>
+        </div>
+      </div>
+      <div class="conversation">
+        <div class="chat-label">Zo werkt het in de praktijk</div>
+        ${t.chat.map((c, ci) => renderBubble(c, i, ci)).join('')}
+        <div class="technique-tip">${t.tip}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Animate bubbles in sequence
+  setTimeout(() => animateBubbles(), 200);
+}
+
+function renderBubble(c, ti, ci) {
+  if (c.role === 'bewoner') {
+    return `
+      <div class="bubble-row bewoner" id="bubble-${ti}-${ci}">
+        <div class="avatar b">👤</div>
+        <div class="bubble bewoner">
+          <div class="bubble-name">Bewoner</div>
+          ${c.text}
+        </div>
+      </div>`;
+  } else if (c.role === 'wrong') {
+    return `
+      <div class="bubble-row bestuurder" id="bubble-${ti}-${ci}">
+        <div class="bubble bestuurder-wrong">
+          <div class="bubble-name">Bestuurder</div>
+          ${c.text}
+          <div><span class="bubble-tag tag-wrong">❌ ${c.tag}</span></div>
+        </div>
+        <div class="avatar vve">VvE</div>
+      </div>`;
+  } else {
+    return `
+      <div class="bubble-row bestuurder" id="bubble-${ti}-${ci}">
+        <div class="bubble bestuurder-right">
+          <div class="bubble-name">Bestuurder</div>
+          ${c.text}
+          <div><span class="bubble-tag tag-right">${c.tag}</span></div>
+        </div>
+        <div class="avatar vve">VvE</div>
+      </div>`;
+  }
+}
+
+function animateBubbles() {
+  const bubbles = document.querySelectorAll('.bubble-row');
+  bubbles.forEach((b, i) => {
+    setTimeout(() => b.classList.add('show'), i * 120);
+  });
+}
+
+// ── RENDER ROLLENSPEL ────────────────────────────────────────────────────────
+function renderScenarioSelect() {
+  document.getElementById('scenarioSelect').innerHTML = scenarios.map((s, i) => `
+    <button class="sc-btn ${i === 0 ? 'active' : ''}" onclick="switchScenario(${i})">
+      ${s.emoji} ${s.title}
+    </button>
+  `).join('');
+}
+
+function switchScenario(idx) {
+  rpState = { scenarioIdx: idx, stepIdx: 0, answered: false, score: 0, usedTechniques: [] };
+  document.querySelectorAll('.sc-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  renderStep();
+}
+
+function renderStep() {
+  const sc = scenarios[rpState.scenarioIdx];
+  const step = sc.steps[rpState.stepIdx];
+  const totalSteps = sc.steps.length;
+  const isLast = rpState.stepIdx === totalSteps - 1;
+
+  document.getElementById('rpCard').innerHTML = `
+    <div class="rp-header">
+      <h3>${sc.emoji} ${sc.title}</h3>
+      <p>${sc.context}</p>
+    </div>
+    <div class="rp-progress">
+      <div class="rp-steps">
+        ${sc.steps.map((_, i) => `
+          <div class="rp-step ${i < rpState.stepIdx ? 'done' : i === rpState.stepIdx ? 'active' : ''}"></div>
+        `).join('')}
+      </div>
+      <div class="rp-progress-text">Situatie ${rpState.stepIdx + 1} van ${totalSteps}</div>
+    </div>
+    <div class="rp-body">
+      <div class="rp-bewoner">
+        <div class="rp-bewoner-avatar">👤</div>
+        <div>
+          <div class="rp-bewoner-name">Bewoner zegt:</div>
+          <div class="rp-bewoner-text">"${step.bewoner}"</div>
+        </div>
+      </div>
+      <div class="rp-question">${step.question}</div>
+      <div class="rp-options" id="rpOptions">
+        ${step.options.map((o, i) => `
+          <button class="rp-opt" onclick="answerStep(${i})">
+            <div class="opt-letter">${String.fromCharCode(65 + i)}</div>
+            <div>${o.text}</div>
+          </button>
+        `).join('')}
+      </div>
+      <div class="rp-feedback" id="rpFeedback"></div>
+      <button class="btn-next" id="btnNext" onclick="${isLast ? 'showScore()' : 'nextStep()'}">
+        ${isLast ? 'Bekijk je score' : 'Volgende situatie'}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  `;
+}
+
+function answerStep(optIdx) {
+  if (rpState.answered) return;
+  rpState.answered = true;
+
+  const sc = scenarios[rpState.scenarioIdx];
+  const step = sc.steps[rpState.stepIdx];
+  const opt = step.options[optIdx];
+
+  // Style options
+  document.querySelectorAll('.rp-opt').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === optIdx) {
+      btn.classList.add(opt.correct ? 'correct' : 'incorrect');
+    } else if (step.options[i].correct) {
+      btn.classList.add('correct');
+    } else {
+      btn.classList.add('neutral');
+    }
+  });
+
+  // Show feedback
+  const fb = document.getElementById('rpFeedback');
+  fb.innerHTML = `
+    <div class="fb-title">${opt.correct ? '✓ Goed gedaan!' : 'Niet de beste keuze'}</div>
+    ${opt.feedback}
+    ${opt.technique ? `<div class="fb-technique">Toegepaste techniek: ${opt.technique}</div>` : ''}
+  `;
+  fb.className = `rp-feedback visible ${opt.correct ? 'good' : 'bad'}`;
+
+  if (opt.correct) {
+    rpState.score++;
+    if (opt.technique && !rpState.usedTechniques.includes(opt.technique)) {
+      rpState.usedTechniques.push(opt.technique);
+    }
+  }
+
+  document.getElementById('btnNext').classList.add('visible');
+}
+
+function nextStep() {
+  rpState.stepIdx++;
+  rpState.answered = false;
+  renderStep();
+}
+
+function showScore() {
+  const sc = scenarios[rpState.scenarioIdx];
+  const total = sc.steps.length;
+  const score = rpState.score;
+
+  let trophy, title, msg;
+  if (score === total) {
+    trophy = '🏆'; title = 'Uitstekend!';
+    msg = 'Je hebt alle situaties goed aangepakt. Je beheerst de technieken om weerstand te erkennen en om te buigen.';
+  } else if (score >= total - 1) {
+    trophy = '⭐'; title = 'Goed bezig!';
+    msg = 'Je hebt de meeste situaties goed aangepakt. Bekijk de feedback bij de gemiste vraag nog eens.';
+  } else {
+    trophy = '💪'; title = 'Blijf oefenen!';
+    msg = 'De technieken zijn er — oefen ze nog eens door een ander scenario te proberen.';
+  }
+
+  document.getElementById('rpCard').innerHTML = `
+    <div class="score-screen visible">
+      <div class="score-trophy">${trophy}</div>
+      <div class="score-badge">${score}/${total} goed</div>
+      <h3>${title}</h3>
+      <p>${msg}</p>
+      ${rpState.usedTechniques.length ? `
+        <div class="score-techniques">
+          ${rpState.usedTechniques.map(t => `<div class="sc-tag">✓ ${t}</div>`).join('')}
+        </div>
+      ` : ''}
+      <button class="btn-retry" onclick="switchScenario(${rpState.scenarioIdx})">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
+        Opnieuw proberen
+      </button>
+    </div>
+  `;
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+renderTechniques();
+renderScenarioSelect();
+renderStep();
+</script>
+</body>
+</html>
