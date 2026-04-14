@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Communicatiemiddel Keuzetool – VvE Belang</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1A2E4A;
+    --navy-light: #243d5e;
+    --orange: #E8693A;
+    --orange-light: #f07d52;
+    --cream: #F7F3EE;
+    --cream-dark: #EDE7DC;
+    --green: #2E7D4F;
+    --green-light: #3a9661;
+    --purple: #5B3A8C;
+    --sky: #E8F2FA;
+    --text: #1A2E4A;
+    --text-muted: #6B7A8D;
+    --white: #ffffff;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 4px 24px rgba(26,46,74,0.10);
+    --shadow-lg: 0 8px 40px rgba(26,46,74,0.16);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy);
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .logo-mark {
+    width: 44px;
+    height: 44px;
+    background: var(--orange);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .logo-mark svg { width: 24px; height: 24px; fill: white; }
+
+  .header-text h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--white);
+    line-height: 1.2;
+  }
+
+  .header-text p {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.6);
+    margin-top: 3px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .progress-wrap.visible { opacity: 1; }
+
+  .progress-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--cream-dark);
+    transition: background 0.3s, transform 0.3s;
+    flex-shrink: 0;
+  }
+
+  .progress-dot.active {
+    background: var(--orange);
+    transform: scale(1.3);
+  }
+
+  .progress-dot.done { background: var(--navy); }
+
+  .progress-line {
+    height: 2px;
+    flex: 1;
+    background: var(--cream-dark);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-line-fill {
+    height: 100%;
+    background: var(--navy);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* ── SCREEN ── */
+  .screen {
+    display: none;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── STEP LABEL ── */
+  .step-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+
+  /* ── QUESTION ── */
+  .question {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    line-height: 1.25;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+
+  .question-sub {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 36px;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ── OPTION CARDS ── */
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .options.single-col {
+    grid-template-columns: 1fr;
+  }
+
+  .option-card {
+    background: var(--white);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--cream-dark);
+    transition: background 0.2s;
+  }
+
+  .option-card:hover {
+    border-color: var(--orange);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .option-card:hover::before { background: var(--orange); }
+
+  .option-card.selected {
+    border-color: var(--navy);
+    background: var(--sky);
+  }
+
+  .option-card.selected::before { background: var(--navy); }
+
+  .option-icon {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .option-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--navy);
+    margin-bottom: 5px;
+    line-height: 1.3;
+  }
+
+  .option-desc {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  /* ── BACK BUTTON ── */
+  .btn-back {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 0;
+    transition: color 0.2s;
+    margin-bottom: 20px;
+  }
+
+  .btn-back:hover { color: var(--navy); }
+
+  .btn-back svg { width: 16px; height: 16px; }
+
+  /* ── RESULT CARD ── */
+  .result-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .result-header {
+    background: var(--navy);
+    padding: 28px 32px;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .result-icon {
+    font-size: 2.4rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .result-header-text h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--white);
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+
+  .result-header-text p {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.65);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .result-body { padding: 32px; }
+
+  .result-section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 16px;
+  }
+
+  /* ── MIDDELEN LIST ── */
+  .middelen-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .middel-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--orange);
+  }
+
+  .middel-item.primary { border-left-color: var(--navy); background: var(--sky); }
+  .middel-item.secondary { border-left-color: var(--green); }
+
+  .middel-emoji { font-size: 1.4rem; flex-shrink: 0; margin-top: 1px; }
+
+  .middel-info h4 {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+
+  .middel-info p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  .middel-badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .badge-primary { background: var(--navy); color: white; }
+  .badge-alt { background: var(--cream-dark); color: var(--text-muted); }
+
+  /* ── TIP BOX ── */
+  .tip-box {
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    border-left: 3px solid var(--orange);
+    margin-bottom: 28px;
+  }
+
+  .tip-box .tip-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 6px;
+  }
+
+  .tip-box p {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ── PRIVACY NOTE ── */
+  .privacy-note {
+    background: #FFF8F5;
+    border: 1px solid #fdd5c0;
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 28px;
+  }
+
+  .privacy-note strong { color: var(--orange); }
+
+  /* ── RESTART BUTTON ── */
+  .btn-restart {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 14px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .btn-restart:hover {
+    background: var(--navy-light);
+    transform: translateY(-1px);
+  }
+
+  /* ── START SCREEN ── */
+  .start-intro {
+    text-align: left;
+    margin-bottom: 48px;
+  }
+
+  .start-kicker {
+    display: inline-block;
+    background: var(--orange);
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .start-intro h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.4rem;
+    line-height: 1.2;
+    color: var(--navy);
+    margin-bottom: 16px;
+  }
+
+  .start-intro p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    font-weight: 300;
+    max-width: 540px;
+  }
+
+  .how-it-works {
+    display: flex;
+    gap: 0;
+    margin-bottom: 48px;
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .hiw-step {
+    flex: 1;
+    padding: 24px 20px;
+    border-right: 1px solid var(--cream-dark);
+    position: relative;
+  }
+
+  .hiw-step:last-child { border-right: none; }
+
+  .hiw-num {
+    width: 32px; height: 32px;
+    background: var(--navy);
+    color: white;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+
+  .hiw-step h4 {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+
+  .hiw-step p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  .btn-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--orange);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 16px 32px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 4px 16px rgba(232,105,58,0.35);
+  }
+
+  .btn-start:hover {
+    background: var(--orange-light);
+    transform: translateY(-2px);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .header { padding: 20px; }
+    .main { padding: 32px 16px 60px; }
+    .options { grid-template-columns: 1fr; }
+    .question { font-size: 1.5rem; }
+    .start-intro h2 { font-size: 1.8rem; }
+    .how-it-works { flex-direction: column; }
+    .hiw-step { border-right: none; border-bottom: 1px solid var(--cream-dark); }
+    .hiw-step:last-child { border-bottom: none; }
+    .result-header { padding: 20px; flex-direction: column; }
+    .result-body { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-mark">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="none" stroke="white" stroke-width="1.5"/></svg>
+  </div>
+  <div class="header-text">
+    <h1>Communicatiemiddel Keuzetool</h1>
+    <p>VvE Belang · E-learning Communicatie in de VvE · Hoofdstuk 2</p>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-dot" id="pd0"></div>
+    <div class="progress-line"><div class="progress-line-fill" id="progressFill"></div></div>
+    <div class="progress-dot" id="pd1"></div>
+    <div class="progress-line"><div class="progress-line-fill" id="progressFill2"></div></div>
+    <div class="progress-dot" id="pd2"></div>
+    <div class="progress-line"><div class="progress-line-fill" id="progressFill3"></div></div>
+    <div class="progress-dot" id="pd3"></div>
+  </div>
+
+  <!-- ── SCREEN 0: START ── -->
+  <div class="screen active" id="screen-start">
+    <div class="start-intro">
+      <span class="start-kicker">Interactieve tool</span>
+      <h2>Welk communicatie&shy;middel past bij jouw situatie?</h2>
+      <p>Als VvE-bestuurder stuur je voortdurend berichten. Maar welk middel kies je wanneer? Beantwoord drie korte vragen en krijg direct een concreet advies.</p>
+    </div>
+
+    <div class="how-it-works">
+      <div class="hiw-step">
+        <div class="hiw-num">1</div>
+        <h4>Kies de situatie</h4>
+        <p>Wat wil je communiceren?</p>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">2</div>
+        <h4>Verfijn je keuze</h4>
+        <p>Eén of twee vervolgvragen</p>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">3</div>
+        <h4>Ontvang advies</h4>
+        <p>Concrete middelen met uitleg</p>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startTool()">
+      Begin de tool
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+  <!-- ── SCREEN 1: SITUATIE ── -->
+  <div class="screen" id="screen-1">
+    <div class="step-label">Stap 1 van 3</div>
+    <h2 class="question">Wat wil je communiceren?</h2>
+    <p class="question-sub">Kies de situatie die het beste past bij wat je nu wilt doen.</p>
+
+    <div class="options">
+      <div class="option-card" onclick="chooseQ1('nieuws')">
+        <span class="option-icon">📢</span>
+        <div class="option-title">Nieuws & informatie</div>
+        <div class="option-desc">Updates over projecten, besluiten, jaarverslagen of andere algemene informatie</div>
+      </div>
+      <div class="option-card" onclick="chooseQ1('storing')">
+        <span class="option-icon">⚡</span>
+        <div class="option-title">Storing of bijzonderheid</div>
+        <div class="option-desc">Urgente melding over een lift, lekkage, waterafsluiting of andere spoedsituatie</div>
+      </div>
+      <div class="option-card" onclick="chooseQ1('besluit')">
+        <span class="option-icon">🗳️</span>
+        <div class="option-title">Overleg & besluitvorming</div>
+        <div class="option-desc">Bespreken van plannen, stemmen over voorstellen of samen een besluit nemen</div>
+      </div>
+      <div class="option-card" onclick="chooseQ1('mening')">
+        <span class="option-icon">💬</span>
+        <div class="option-title">Meningen ophalen</div>
+        <div class="option-desc">Peilen wat bewoners vinden, een enquête uitzetten of persoonlijk feedback vragen</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 2a: NIEUWS – urgentie ── -->
+  <div class="screen" id="screen-2a">
+    <button class="btn-back" onclick="goBack(1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Terug
+    </button>
+    <div class="step-label">Stap 2 van 3</div>
+    <h2 class="question">Hoe urgent is het bericht?</h2>
+    <p class="question-sub">Dit bepaalt via welk kanaal je de informatie het best verstuurt.</p>
+
+    <div class="options single-col">
+      <div class="option-card" onclick="chooseQ2('nieuws-urgent')">
+        <span class="option-icon">🔴</span>
+        <div class="option-title">Urgent — bewoners moeten het nu weten</div>
+        <div class="option-desc">Bijv. een geplande afsluiting morgen, een besluit dat direct ingaat</div>
+      </div>
+      <div class="option-card" onclick="chooseQ2('nieuws-normaal')">
+        <span class="option-icon">🟡</span>
+        <div class="option-title">Normaal — binnen een paar dagen is prima</div>
+        <div class="option-desc">Bijv. update over een lopend project, aankondiging van een vergadering</div>
+      </div>
+      <div class="option-card" onclick="chooseQ2('nieuws-archief')">
+        <span class="option-icon">🟢</span>
+        <div class="option-title">Archief — bewoners moeten het kunnen terugvinden</div>
+        <div class="option-desc">Bijv. notulen, jaarverslag, huishoudelijk reglement</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 2b: STORING – ernst ── -->
+  <div class="screen" id="screen-2b">
+    <button class="btn-back" onclick="goBack(1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Terug
+    </button>
+    <div class="step-label">Stap 2 van 3</div>
+    <h2 class="question">Hoe snel moeten bewoners het weten?</h2>
+    <p class="question-sub">Bij storingen bepaalt de ernst hoe direct je communiceert.</p>
+
+    <div class="options single-col">
+      <div class="option-card" onclick="chooseQ2('storing-nu')">
+        <span class="option-icon">🚨</span>
+        <div class="option-title">Direct — binnen het uur</div>
+        <div class="option-desc">Bijv. lift uitgevallen, waterleiding gesprongen, brand- of veiligheidsmelding</div>
+      </div>
+      <div class="option-card" onclick="chooseQ2('storing-vandaag')">
+        <span class="option-icon">⏰</span>
+        <div class="option-title">Vandaag nog — maar niet per direct</div>
+        <div class="option-desc">Bijv. verlichting in de garage werkt niet, postbussen tijdelijk afgesloten</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 2c: BESLUIT – fase ── -->
+  <div class="screen" id="screen-2c">
+    <button class="btn-back" onclick="goBack(1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Terug
+    </button>
+    <div class="step-label">Stap 2 van 3</div>
+    <h2 class="question">In welke fase zit het besluitvormingsproces?</h2>
+    <p class="question-sub">Draagvlak opbouwen vraagt andere middelen dan formeel beslissen.</p>
+
+    <div class="options single-col">
+      <div class="option-card" onclick="chooseQ2('besluit-draagvlak')">
+        <span class="option-icon">🌱</span>
+        <div class="option-title">Draagvlak opbouwen — nog in de verkenningsfase</div>
+        <div class="option-desc">Je wilt bewoners informeren, meningen ophalen en enthousiasme wekken vóór een formeel besluit</div>
+      </div>
+      <div class="option-card" onclick="chooseQ2('besluit-formeel')">
+        <span class="option-icon">⚖️</span>
+        <div class="option-title">Formeel beslissen — klaar voor de stemming</div>
+        <div class="option-desc">Alle informatie is gedeeld, bewoners zijn geïnformeerd en het besluit moet officieel worden genomen</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 2d: MENING – schaal ── -->
+  <div class="screen" id="screen-2d">
+    <button class="btn-back" onclick="goBack(1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Terug
+    </button>
+    <div class="step-label">Stap 2 van 3</div>
+    <h2 class="question">Wil je iedereen bereiken of een selecte groep?</h2>
+    <p class="question-sub">Dit bepaalt welke aanpak het meest efficiënt is.</p>
+
+    <div class="options single-col">
+      <div class="option-card" onclick="chooseQ2('mening-iedereen')">
+        <span class="option-icon">👥</span>
+        <div class="option-title">Alle bewoners</div>
+        <div class="option-desc">Je wilt een breed beeld krijgen van wat iedereen in het complex vindt</div>
+      </div>
+      <div class="option-card" onclick="chooseQ2('mening-select')">
+        <span class="option-icon">🎯</span>
+        <div class="option-title">Een specifieke bewoner of kleine groep</div>
+        <div class="option-desc">Bijv. de mensen die betrokken zijn bij een project, of één bewoner met een specifiek bezwaar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 3: RESULTATEN ── -->
+  <div class="screen" id="screen-result">
+    <button class="btn-back" onclick="goBack(2)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Terug
+    </button>
+    <div class="step-label">Jouw advies</div>
+    <div id="resultContent"></div>
+
+    <button class="btn-restart" onclick="restart()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
+      Opnieuw beginnen
+    </button>
+  </div>
+
+</main>
+
+<script>
+  let state = { q1: null, q2: null };
+
+  const results = {
+    'nieuws-urgent': {
+      icon: '📧',
+      title: 'Directe e-mail + WhatsApp-bericht',
+      subtitle: 'Voor urgente informatie die bewoners snel moeten weten',
+      primary: [
+        { emoji: '📱', name: 'WhatsApp / Signal', desc: 'Snelste manier om iedereen direct te bereiken. Stuur een kort, helder bericht met de essentiële informatie.', badge: 'Eerste keuze' },
+        { emoji: '📧', name: 'Directe e-mail', desc: 'Gebruik voor uitgebreidere uitleg of als follow-up op het WhatsApp-bericht. Stuur naar alle leden tegelijk.', badge: 'Aanvulling' }
+      ],
+      secondary: [
+        { emoji: '📋', name: 'Prikbord in de hal', desc: 'Goed als aanvulling voor bewoners die niet op hun telefoon zitten.' }
+      ],
+      tip: 'Houd het bericht kort: wat is er aan de hand, wat moeten bewoners weten of doen, en wie kunnen ze bereiken met vragen.',
+      privacy: 'Gebruik bij e-mail de BCC-functie zodat bewoners elkaars e-mailadres niet zien.'
+    },
+    'nieuws-normaal': {
+      icon: '📰',
+      title: 'Digitale nieuwsbrief of portaal',
+      subtitle: 'Voor reguliere updates die bewoners binnen een paar dagen bereiken',
+      primary: [
+        { emoji: '🌐', name: 'VvE-portaal of website', desc: 'Plaats de informatie op de centrale plek. Bewoners kunnen het lezen wanneer het hen uitkomt.', badge: 'Eerste keuze' },
+        { emoji: '📨', name: 'Digitale nieuwsbrief', desc: 'Combineer meerdere updates in één nieuwsbrief. Stuur maandelijks of per kwartaal.', badge: 'Aanvulling' }
+      ],
+      secondary: [
+        { emoji: '📧', name: 'E-mail', desc: 'Voor als je zeker wilt zijn dat iedereen het bericht ziet — bijv. bij een aankondiging van een vergadering.' }
+      ],
+      tip: 'Verwijs in de e-mail of nieuwsbrief altijd door naar het portaal voor meer informatie. Zo wordt het portaal de gewoonteplaats voor bewoners.',
+      privacy: null
+    },
+    'nieuws-archief': {
+      icon: '📁',
+      title: 'VvE-portaal als centrale archief',
+      subtitle: 'Voor documenten die bewoners nu én later moeten kunnen terugvinden',
+      primary: [
+        { emoji: '🌐', name: 'VvE-portaal of website', desc: 'Dé plek voor alle officiële documenten. Zorg voor een logische mappenstructuur en duidelijke bestandsnamen.', badge: 'Eerste keuze' }
+      ],
+      secondary: [
+        { emoji: '📬', name: 'Fysieke brief', desc: 'Stuur bij officiële juridische stukken (bijv. ALV-uitnodiging) ook altijd een brief per post.' },
+        { emoji: '📧', name: 'E-mail', desc: 'Stuur een e-mail als notificatie dat er een nieuw document beschikbaar is op het portaal.' }
+      ],
+      tip: 'Maak één verantwoordelijke voor het portaal. Verouderde informatie wekt wantrouwen — ruim regelmatig op.',
+      privacy: 'Let op welke documenten voor alle bewoners zichtbaar zijn. Persoonsgegevens (bijv. namen in notulen) horen niet in publieke documenten.'
+    },
+    'storing-nu': {
+      icon: '🚨',
+      title: 'WhatsApp + prikbord — direct',
+      subtitle: 'Voor acute storingen waarbij elke minuut telt',
+      primary: [
+        { emoji: '📱', name: 'WhatsApp / Signal groep', desc: 'Stuur direct een kort bericht: wat is er aan de hand, is het gevaarlijk, wat moeten bewoners doen?', badge: 'Nu meteen' },
+        { emoji: '📋', name: 'Briefje in de hal / prikbord', desc: 'Voor bewoners die niet op hun telefoon zitten. Hang een briefje bij de ingang en bij de storing zelf.', badge: 'Aanvulling' }
+      ],
+      secondary: [
+        { emoji: '📧', name: 'E-mail', desc: 'Stuur een opvolg-e-mail als de situatie langer duurt of voor de update "storing is opgelost".' }
+      ],
+      tip: 'Format voor een spoedmelding: [WAT] Lift is buiten werking. [WANNEER] Vanaf nu. [WAT TE DOEN] Gebruik de trappenhuis. [UPDATE] Reparatie gepland voor [tijdstip].',
+      privacy: null
+    },
+    'storing-vandaag': {
+      icon: '🔧',
+      title: 'Prikbord + e-mail',
+      subtitle: 'Voor niet-acute meldingen die bewoners vandaag moeten zien',
+      primary: [
+        { emoji: '📋', name: 'Prikbord in de hal', desc: 'Bewoners zien het als ze binnenkomen. Houd het actueel: vermeld ook wanneer het opgelost is.', badge: 'Eerste keuze' },
+        { emoji: '📧', name: 'E-mail', desc: 'Voor uitgebreidere informatie of als je zeker wilt zijn dat iedereen het ziet.', badge: 'Aanvulling' }
+      ],
+      secondary: [
+        { emoji: '📱', name: 'WhatsApp', desc: 'Kan ook, maar bewaar WhatsApp voor echte spoedsituaties om bericht-moeheid te voorkomen.' }
+      ],
+      tip: 'Vermeld altijd: wat er aan de hand is, wanneer het opgelost wordt (of wie ze kunnen bellen als ze vragen hebben).',
+      privacy: null
+    },
+    'besluit-draagvlak': {
+      icon: '🌱',
+      title: 'Informatiebijeenkomst + portaal',
+      subtitle: 'Bouw eerst begrip en enthousiasme op — dan pas formeel beslissen',
+      primary: [
+        { emoji: '🏠', name: 'Informele bewonersbijeenkomst', desc: 'Organiseer een avond waarop je het plan presenteert, vragen beantwoordt en bezwaren hoort. Dit bouwt vertrouwen.', badge: 'Eerste keuze' },
+        { emoji: '🌐', name: 'VvE-portaal', desc: 'Zet alle informatie, presentaties en Q&A online zodat bewoners het kunnen nalezen.', badge: 'Aanvulling' }
+      ],
+      secondary: [
+        { emoji: '📊', name: 'Enquête of poll', desc: 'Peil alvast de stemming: ben je voor of tegen, en waarom? Dit geeft inzicht voor de vergadering.' },
+        { emoji: '📧', name: 'Nieuwsbrief', desc: 'Houd bewoners op de hoogte van de voortgang via een nieuwsbrief per mijlpaal.' }
+      ],
+      tip: 'Gebruik de principes van Cialdini: laat bewoners van een ander complex vertellen hoe goed het werkte (sociale bewijskracht), benadruk gedeelde belangen (eenheid) en geef iets kleins weg zoals een folder (wederkerigheid).',
+      privacy: null
+    },
+    'besluit-formeel': {
+      icon: '⚖️',
+      title: 'ALV — de enige formeel geldige route',
+      subtitle: 'Officiële besluiten kunnen alleen worden genomen in een vergadering van eigenaars',
+      primary: [
+        { emoji: '🗳️', name: 'Algemene Ledenvergadering (ALV)', desc: 'Verplicht voor alle officiële besluiten. Stuur de uitnodiging minimaal 15 dagen van tevoren per brief of e-mail.', badge: 'Verplicht' }
+      ],
+      secondary: [
+        { emoji: '📬', name: 'Officiële uitnodigingsbrief', desc: 'Stuur de agenda en bijbehorende stukken ruim van tevoren (bij voorkeur 1 maand) zodat iedereen zich kan voorbereiden.' },
+        { emoji: '📊', name: 'PowerPoint presentatie', desc: 'Gebruik een duidelijke presentatie tijdens de vergadering om het voorstel toe te lichten.' },
+        { emoji: '📝', name: 'Notulen na afloop', desc: 'Stuur de notulen naar alle leden — ook degenen die er niet bij waren. Zet ze ook op het portaal.' }
+      ],
+      tip: 'Vraag van tevoren of eigenaars agendapunten of vragen hebben (stel een deadline). Dit voorkomt verrassingen en houdt de vergadering beheersbaar.',
+      privacy: 'Gebruik BCC bij het versturen van uitnodigingen per e-mail. Vraag bij identiteitscontrole nooit om een kopie van het ID.'
+    },
+    'mening-iedereen': {
+      icon: '📊',
+      title: 'Digitale enquête',
+      subtitle: 'Snel inzicht in wat alle bewoners vinden, zonder groepsdruk',
+      primary: [
+        { emoji: '📊', name: 'Online enquête of poll', desc: 'Gebruik een gratis tool (bijv. Google Forms, Microsoft Forms of de poll-functie in het VvE-portaal). Bewoners vullen individueel in.', badge: 'Eerste keuze' }
+      ],
+      secondary: [
+        { emoji: '📄', name: 'Papieren enquête', desc: 'Voor bewoners die niet digitaal vaardig zijn. Leg ze neer bij de brievenbussen of stuur ze per post.' },
+        { emoji: '🌐', name: 'Reactieveld op portaal', desc: 'Bewoners kunnen anoniem reageren. Antwoorden zijn niet direct zichtbaar voor anderen.' }
+      ],
+      tip: 'Houd de enquête kort (max. 5 vragen). Stel de vragen zo dat bewoners niet kunnen zien wat anderen antwoorden — dit geeft een eerlijker beeld.',
+      privacy: 'Anonimiteit verhoogt de eerlijkheid van de antwoorden. Overweeg een anonieme enquête als het een gevoelig onderwerp is.'
+    },
+    'mening-select': {
+      icon: '🤝',
+      title: 'Persoonlijk gesprek',
+      subtitle: 'Het meest directe en effectieve middel voor individuele meningen',
+      primary: [
+        { emoji: '👥', name: 'Persoonlijk gesprek (1-op-1)', desc: 'Spreek de bewoner aan in de gang, bel hem op of maak een afspraak. Dit geeft het diepste inzicht en versterkt het vertrouwen.', badge: 'Eerste keuze' }
+      ],
+      secondary: [
+        { emoji: '📧', name: 'Persoonlijke e-mail', desc: 'Als een gesprek niet direct mogelijk is. Schrijf in de ik-vorm en stel open vragen.' },
+        { emoji: '📱', name: 'WhatsApp (privébericht)', desc: 'Voor een informeel, laagdrempelig contact. Let op: gebruik dit voor meningen, niet voor officiële communicatie.' }
+      ],
+      tip: 'Gebruik de LSD-techniek: Luisteren, Samenvatten, Doorvragen. Geef de bewoner alle ruimte om zijn standpunt uit te leggen — onderbreek niet en oordeel niet.',
+      privacy: 'Leg persoonlijke gesprekken alleen schriftelijk vast als dat nodig is voor het dossier. Vraag toestemming als je het wilt bewaren.'
+    }
+  };
+
+  function startTool() {
+    showScreen('screen-1');
+    document.getElementById('progressWrap').classList.add('visible');
+    updateProgress(1);
+  }
+
+  function chooseQ1(val) {
+    state.q1 = val;
+    const map = { nieuws: '2a', storing: '2b', besluit: '2c', mening: '2d' };
+    showScreen('screen-' + map[val]);
+    updateProgress(2);
+  }
+
+  function chooseQ2(val) {
+    state.q2 = val;
+    showResult(val);
+    updateProgress(3);
+  }
+
+  function showResult(key) {
+    const r = results[key];
+    if (!r) return;
+
+    let html = `
+      <div class="result-card">
+        <div class="result-header">
+          <div class="result-icon">${r.icon}</div>
+          <div class="result-header-text">
+            <h2>${r.title}</h2>
+            <p>${r.subtitle}</p>
+          </div>
+        </div>
+        <div class="result-body">
+          <div class="result-section-label">Aanbevolen middelen</div>
+          <div class="middelen-list">`;
+
+    r.primary.forEach((m, i) => {
+      html += `
+        <div class="middel-item primary">
+          <div class="middel-emoji">${m.emoji}</div>
+          <div class="middel-info">
+            <h4>${m.name} <span class="middel-badge badge-primary">${m.badge}</span></h4>
+            <p>${m.desc}</p>
+          </div>
+        </div>`;
+    });
+
+    if (r.secondary && r.secondary.length) {
+      html += `</div><div class="result-section-label" style="margin-top:20px">Ook geschikt</div><div class="middelen-list">`;
+      r.secondary.forEach(m => {
+        html += `
+          <div class="middel-item secondary">
+            <div class="middel-emoji">${m.emoji}</div>
+            <div class="middel-info">
+              <h4>${m.name}</h4>
+              <p>${m.desc}</p>
+            </div>
+          </div>`;
+      });
+    }
+
+    html += `</div>`;
+
+    if (r.tip) {
+      html += `
+        <div class="tip-box">
+          <div class="tip-label">💡 Praktische tip</div>
+          <p>${r.tip}</p>
+        </div>`;
+    }
+
+    if (r.privacy) {
+      html += `
+        <div class="privacy-note">
+          <strong>Privacy:</strong> ${r.privacy}
+        </div>`;
+    }
+
+    html += `</div></div>`;
+
+    document.getElementById('resultContent').innerHTML = html;
+    showScreen('screen-result');
+  }
+
+  function goBack(toStep) {
+    if (toStep === 1) {
+      showScreen('screen-1');
+      updateProgress(1);
+    } else if (toStep === 2) {
+      const map = { nieuws: '2a', storing: '2b', besluit: '2c', mening: '2d' };
+      showScreen('screen-' + map[state.q1]);
+      updateProgress(2);
+    }
+  }
+
+  function restart() {
+    state = { q1: null, q2: null };
+    document.getElementById('progressWrap').classList.remove('visible');
+    showScreen('screen-start');
+    updateProgress(0);
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) { el.classList.add('active'); window.scrollTo(0, 0); }
+  }
+
+  function updateProgress(step) {
+    const dots = [0,1,2,3];
+    dots.forEach(i => {
+      const d = document.getElementById('pd' + i);
+      if (!d) return;
+      d.className = 'progress-dot';
+      if (i < step) d.classList.add('done');
+      if (i === step) d.classList.add('active');
+    });
+    const fills = ['progressFill','progressFill2','progressFill3'];
+    fills.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.style.width = (i < step - 1) ? '100%' : '0%';
+    });
+  }
+</script>
+</body>
+</html>
