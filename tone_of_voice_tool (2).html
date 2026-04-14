@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tone of Voice & Framing – VvE Belang</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:      #1A2E4A;
+  --navy-mid:  #243d5e;
+  --orange:    #E8693A;
+  --orange-lt: #f5835a;
+  --cream:     #F7F3EE;
+  --cream-dk:  #EDE7DC;
+  --green:     #2E7D4F;
+  --red:       #C0392B;
+  --sky:       #E8F2FA;
+  --text:      #1A2E4A;
+  --muted:     #6B7A8D;
+  --white:     #ffffff;
+  --r:         16px;
+  --r-sm:      10px;
+  --shadow:    0 4px 24px rgba(26,46,74,.10);
+  --shadow-lg: 0 8px 40px rgba(26,46,74,.18);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  background: var(--navy);
+  padding: 24px 40px;
+  display: flex; align-items: center; gap: 18px;
+}
+.logo {
+  width: 42px; height: 42px;
+  background: var(--orange); border-radius: 10px;
+  display: grid; place-items: center; flex-shrink: 0;
+}
+.logo svg { width: 22px; height: 22px; fill: white; }
+.header-copy h1 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: white; line-height: 1.2; }
+.header-copy p  { font-size: .78rem; color: rgba(255,255,255,.55); margin-top: 2px; font-weight: 300; }
+
+/* LAYOUT */
+.wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+/* INTRO */
+.kicker {
+  display: inline-block; background: var(--orange); color: white;
+  font-size: .7rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 20px; margin-bottom: 18px;
+}
+.intro h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.2rem; line-height: 1.2; color: var(--navy); margin-bottom: 12px;
+}
+.intro p {
+  font-size: .98rem; color: var(--muted); line-height: 1.7;
+  font-weight: 300; max-width: 560px; margin-bottom: 40px;
+}
+
+/* SECTION LABELS */
+.section-label {
+  font-size: .72rem; font-weight: 600; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--orange); margin-bottom: 16px;
+}
+
+/* ── PART 1: DRIE DIMENSIES ── */
+.dimensions { margin-bottom: 80px; }
+
+.dim-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.dim-card {
+  background: white; border-radius: var(--r);
+  box-shadow: var(--shadow); overflow: hidden;
+  border: 2px solid transparent;
+}
+
+.dim-top {
+  padding: 20px 20px 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+  border-bottom: 1px solid var(--cream-dk);
+}
+.dim-emoji { font-size: 1.8rem; flex-shrink: 0; }
+.dim-num   { font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+.dim-title { font-weight: 600; font-size: .95rem; color: var(--navy); line-height: 1.3; }
+
+.dim-body {
+  display: block;
+  padding: 20px;
+}
+
+.dim-body p { font-size: .88rem; line-height: 1.7; color: #444; font-weight: 300; margin-bottom: 14px; }
+.dim-body p:last-child { margin-bottom: 0; }
+
+/* ── PART 2: TOON SWITCHER ── */
+.switcher { margin-bottom: 56px; }
+
+.switcher-intro {
+  font-size: .95rem; color: var(--muted); line-height: 1.7;
+  font-weight: 300; margin-bottom: 24px;
+}
+
+.scenario-nav {
+  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.scenario-btn {
+  background: white; border: 2px solid var(--cream-dk);
+  border-radius: var(--r-sm); padding: 8px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .82rem; font-weight: 500; color: var(--muted);
+  cursor: pointer; transition: border-color .2s, color .2s;
+}
+.scenario-btn:hover { border-color: var(--orange); color: var(--navy); }
+.scenario-btn.active { border-color: var(--navy); color: var(--navy); background: var(--sky); }
+
+.scenario-card {
+  background: white; border-radius: var(--r);
+  box-shadow: var(--shadow); overflow: hidden;
+}
+
+.scenario-header {
+  background: var(--navy); padding: 20px 28px;
+  display: flex; align-items: center; gap: 14px;
+}
+.scenario-emoji { font-size: 2rem; }
+.scenario-header-text h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.2rem; color: white; margin-bottom: 3px;
+}
+.scenario-header-text p { font-size: .82rem; color: rgba(255,255,255,.6); font-weight: 300; }
+
+.scenario-body { padding: 28px; }
+
+/* TOGGLE SWITCH */
+.tone-toggle {
+  display: flex; align-items: center;
+  background: var(--cream); border-radius: 50px;
+  padding: 4px; margin-bottom: 28px;
+  position: relative; width: fit-content;
+}
+.tone-btn {
+  position: relative; z-index: 2;
+  padding: 10px 24px; border: none; background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .88rem; font-weight: 600;
+  cursor: pointer; border-radius: 50px;
+  transition: color .2s;
+  display: flex; align-items: center; gap: 7px;
+}
+.tone-btn.wrong { color: var(--muted); }
+.tone-btn.right { color: var(--muted); }
+.tone-btn.active.wrong { color: var(--red); }
+.tone-btn.active.right { color: var(--green); }
+
+.toggle-pill {
+  position: absolute; top: 4px; left: 4px;
+  height: calc(100% - 8px);
+  background: white; border-radius: 50px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  transition: transform .3s ease, width .3s ease;
+  z-index: 1;
+}
+
+/* MESSAGE BUBBLE */
+.message-wrap {
+  min-height: 120px;
+  position: relative;
+}
+
+.message-bubble {
+  border-radius: var(--r);
+  padding: 20px 24px;
+  font-size: .95rem; line-height: 1.75;
+  transition: opacity .2s;
+  position: relative;
+}
+.message-bubble.wrong {
+  background: #FDF2F2;
+  border-left: 4px solid var(--red);
+}
+.message-bubble.right {
+  background: #EAF5EE;
+  border-left: 4px solid var(--green);
+}
+
+.message-tag {
+  font-size: .68rem; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.message-tag.wrong { color: var(--red); }
+.message-tag.right { color: var(--green); }
+
+.message-text { color: var(--text); }
+
+/* WORD HIGHLIGHTS */
+.hl-bad  { background: #fdd; border-radius: 3px; padding: 1px 3px; font-weight: 600; color: var(--red); }
+.hl-good { background: #dfd; border-radius: 3px; padding: 1px 3px; font-weight: 600; color: var(--green); }
+
+/* EXPLANATION */
+.explanation {
+  margin-top: 20px; padding: 16px 20px;
+  background: var(--sky); border-radius: var(--r-sm);
+  border-left: 3px solid var(--navy);
+  font-size: .88rem; line-height: 1.65; color: var(--text);
+}
+.explanation .exp-label {
+  font-size: .68rem; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--navy); margin-bottom: 6px;
+}
+
+/* WORD SWAP */
+.word-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.word-pair {
+  display: flex; align-items: center; gap: 0;
+  border-radius: 50px; overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,.08);
+  font-size: .82rem; font-weight: 500;
+}
+.word-bad  { background: #fdd; color: var(--red);   padding: 6px 12px; }
+.word-arr  { background: #eee; color: var(--muted); padding: 6px 8px; font-size: .75rem; }
+.word-good { background: #dfd; color: var(--green);  padding: 6px 12px; }
+
+/* ── PART 3: VUISTREGEL ── */
+.vuistregel {
+  background: var(--navy); border-radius: var(--r);
+  padding: 36px 40px; margin-bottom: 48px;
+  box-shadow: var(--shadow-lg);
+}
+.vuistregel h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem; color: white; margin-bottom: 20px;
+}
+.regel-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.regel-item {
+  background: rgba(255,255,255,.08);
+  border-radius: var(--r-sm); padding: 18px 16px;
+}
+.regel-item .ri-emoji { font-size: 1.6rem; margin-bottom: 10px; display: block; }
+.regel-item .ri-label {
+  font-size: .68rem; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--orange); margin-bottom: 6px;
+}
+.regel-item p { font-size: .85rem; color: rgba(255,255,255,.8); line-height: 1.6; font-weight: 300; }
+.regel-item strong { color: white; font-weight: 600; }
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn .25s ease both; }
+
+/* RESPONSIVE */
+@media (max-width: 620px) {
+  .header { padding: 18px; }
+  .wrap { padding: 28px 16px 60px; }
+  .dim-grid { grid-template-columns: 1fr; }
+  .intro h2 { font-size: 1.6rem; }
+  .regel-grid { grid-template-columns: 1fr; }
+  .scenario-body { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="none" stroke="white" stroke-width="1.5"/></svg>
+  </div>
+  <div class="header-copy">
+    <h1>Tone of Voice & Framing</h1>
+    <p>VvE Belang · E-learning Communicatie in de VvE · Hoofdstuk 3</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="intro">
+    <span class="kicker">Stijl & woordkeuze</span>
+    <h2>De juiste woorden bepalen de toon</h2>
+    <p>Hoe je iets zegt, is minstens zo belangrijk als wát je zegt. Dezelfde boodschap kan heel anders landen afhankelijk van je woordkeuze. Ontdek hoe dat werkt in de VvE-praktijk.</p>
+  </div>
+
+  <!-- ══ DEEL 1: DRIE DIMENSIES ══ -->
+  <div class="dimensions">
+    <div class="section-label">Deel 1 — De drie stijldimensies</div>
+    <div class="dim-grid">
+
+      <div class="dim-card" id="dim-0">
+        <div class="dim-top">
+          <div class="dim-emoji">🎩</div>
+          <div>
+            <div class="dim-num">Dimensie 1</div>
+            <div class="dim-title">Formeel of informeel</div>
+          </div>
+        </div>
+        <div class="dim-body">
+          <p>Spreek je bewoners aan met <strong>u</strong> of met <strong>jij</strong>? Gebruik je <em>geachte heer/mevrouw</em> of gewoon <em>hallo allemaal</em>?</p>
+          <p>Een te formele toon kan afstandelijk aanvoelen. Een te informele toon kan onprofessioneel overkomen. De juiste balans hangt af van de situatie én van wie je bewoners zijn.</p>
+          <p><strong>Bij de VvE</strong> werkt een vriendelijk-zakelijke toon het beste: niet overdreven formeel, maar wel respectvol. Gebruik <em>u</em> in officiële stukken zoals ALV-uitnodigingen, en <em>je/jullie</em> in informele updates of WhatsApp.</p>
+        </div>
+      </div>
+
+      <div class="dim-card" id="dim-1">
+        <div class="dim-top">
+          <div class="dim-emoji">❤️</div>
+          <div>
+            <div class="dim-num">Dimensie 2</div>
+            <div class="dim-title">Feitelijk of emotioneel</div>
+          </div>
+        </div>
+        <div class="dim-body">
+          <p>Deel je alleen de feiten, of erken je ook de emoties die bij een onderwerp spelen?</p>
+          <p>Bij VvE-communicatie zijn mensen vaak emotioneel betrokken bij hun woning. Een puur feitelijke toon kan koud aanvoelen. Maar te veel emotie in officiële stukken ondermijnt de geloofwaardigheid.</p>
+          <p><strong>De tip:</strong> begin bij gevoelige onderwerpen altijd met erkenning van het gevoel, voordat je overgaat op feiten en besluiten. <em>"We begrijpen dat dit een grote investering is..."</em> werkt beter dan direct de cijfers noemen.</p>
+        </div>
+      </div>
+
+      <div class="dim-card" id="dim-2">
+        <div class="dim-top">
+          <div class="dim-emoji">✨</div>
+          <div>
+            <div class="dim-num">Dimensie 3</div>
+            <div class="dim-title">Enthousiast of neutraal</div>
+          </div>
+        </div>
+        <div class="dim-body">
+          <p>Is de toon vrolijk en positief, of juist feitelijk en objectief?</p>
+          <p>Enthousiasme werkt aanstekelijk — zeker als je draagvlak wilt creëren voor een project. Maar bij ernstige zaken of conflicten is een neutrale, rustige toon gepaster.</p>
+          <p><strong>Let op framing:</strong> hoe je iets noemt, bepaalt hoe mensen erover denken. <em>Kosten voor duurzaamheid</em> klinkt als een last. <em>Investeren in duurzaamheid</em> klinkt als een kans. Dezelfde maatregel, heel andere beleving.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ DEEL 2: TOON SWITCHER ══ -->
+  <div class="switcher">
+    <div class="section-label">Deel 2 — Voel het verschil zelf</div>
+    <p class="switcher-intro">Lees dezelfde boodschap in twee verschillende tonen. Klik op de knop om te wisselen en merk hoe anders het aanvoelt.</p>
+
+    <div class="scenario-nav" id="scenarioNav"></div>
+    <div class="scenario-card" id="scenarioCard"></div>
+  </div>
+
+  <!-- ══ DEEL 3: WOORDENSWAP ══ -->
+  <div style="margin-bottom: 56px;">
+    <div class="section-label">Deel 3 — Kleine woorden, groot verschil</div>
+    <p style="font-size:.95rem; color:var(--muted); line-height:1.7; font-weight:300; margin-bottom:24px;">Nederlanders zijn allergisch voor bepaalde woorden. Kleine aanpassingen maken een wereld van verschil.</p>
+
+    <div style="background:white; border-radius:var(--r); box-shadow:var(--shadow); padding:28px;">
+      <div class="word-pills" id="wordPills"></div>
+    </div>
+  </div>
+
+  <!-- ══ DEEL 4: VUISTREGEL ══ -->
+  <div class="vuistregel">
+    <h3>De vuistregel in één oogopslag</h3>
+    <div class="regel-grid">
+      <div class="regel-item">
+        <span class="ri-emoji">🎯</span>
+        <div class="ri-label">Pas de toon aan</div>
+        <p>Gebruik <strong>u</strong> in officiële stukken, <strong>je/jullie</strong> in informele berichten. De situatie bepaalt de stijl.</p>
+      </div>
+      <div class="regel-item">
+        <span class="ri-emoji">💬</span>
+        <div class="ri-label">Kies positieve woorden</div>
+        <p>Vermijd <strong>moet</strong> — gebruik <strong>mag</strong> of <strong>kan</strong>. Spreek over <strong>investeren</strong> in plaats van <strong>kosten</strong>.</p>
+      </div>
+      <div class="regel-item">
+        <span class="ri-emoji">🤝</span>
+        <div class="ri-label">Erken het gevoel eerst</div>
+        <p>Bij gevoelige onderwerpen: begin met <strong>begrip tonen</strong>, dan pas overgaan op feiten en besluiten.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+
+const scenarios = [
+  {
+    emoji: "🗑️",
+    title: "Vuilnis in de hal",
+    sub: "Een bewoner laat vuilniszakken in de gemeenschappelijke ruimte staan.",
+    wrong: {
+      label: "❌ Verkeerde toon",
+      text: "Dit is nou de zoveelste keer dat je je <span class='hl-bad'>vuilniszakken in de hal laat slingeren</span>. Je bent echt een <span class='hl-bad'>egoïst</span>. Je <span class='hl-bad'>moet</span> je rommel gewoon in de vuilnisbak gooien net als de rest hier!"
+    },
+    right: {
+      label: "✓ Goede toon",
+      text: "Goh, ik zag dat er voor de tweede keer deze week <span class='hl-good'>vuilniszakken in de hal stonden</span>. Ik ervaar daar wat last van en vind het er niet netjes uitzien. Ik zou het <span class='hl-good'>prettig vinden</span> als de vuilniszakken in de juiste container worden gegooid. <span class='hl-good'>Kunnen we hierover iets afspreken?</span>"
+    },
+    uitleg: "De eerste versie is aanvallend en beschuldigend — dat roept een tegenaanval op. De tweede versie spreekt vanuit de ik-vorm, benoemt het gedrag zonder te oordelen over de persoon, en nodigt uit tot een gesprek."
+  },
+  {
+    emoji: "☀️",
+    title: "Zonnepanelen op het dak",
+    sub: "Het bestuur wil bewoners enthousiasmeren voor een duurzaamheidsproject.",
+    wrong: {
+      label: "❌ Verkeerde toon",
+      text: "U <span class='hl-bad'>moet</span> weten dat de <span class='hl-bad'>kosten voor</span> de zonnepanelen €2.400 per appartement bedragen. De vergadering vindt plaats op 15 mei. Aanwezigheid is <span class='hl-bad'>verplicht</span>."
+    },
+    right: {
+      label: "✓ Goede toon",
+      text: "Goed nieuws! We <span class='hl-good'>mogen</span> binnenkort <span class='hl-good'>investeren in</span> zonnepanelen voor ons gebouw. Dat betekent lagere energierekeningen én een hogere woningwaarde. We <span class='hl-good'>nodigen u van harte uit</span> voor de informatiebijeenkomst op 15 mei."
+    },
+    uitleg: "Framing maakt het verschil: 'kosten' vs 'investeren', 'moet' vs 'mag', 'verplicht' vs 'van harte uitgenodigd'. Dezelfde feiten, maar de tweede versie activeert en motiveert in plaats van te demotiveren."
+  },
+  {
+    emoji: "🔧",
+    title: "Onderhoudsplanning",
+    sub: "Het bestuur informeert over aankomende werkzaamheden.",
+    wrong: {
+      label: "❌ Verkeerde toon",
+      text: "Hierbij delen wij u mede dat er ingevolge het meerjarenonderhoudsplan werkzaamheden <span class='hl-bad'>zullen worden uitgevoerd</span> aan het gebouw. U <span class='hl-bad'>dient</span> rekening te houden met <span class='hl-bad'>hinder</span> in de periode van 3 tot 14 juni."
+    },
+    right: {
+      label: "✓ Goede toon",
+      text: "Van <span class='hl-good'>3 tot 14 juni</span> werken we aan het onderhoud van ons gebouw. <span class='hl-good'>Fijn dat dit eindelijk opgepakt wordt!</span> Houd er rekening mee dat er wat geluid bij komt kijken. Heeft u vragen? Bel gerust."
+    },
+    uitleg: "Officieel taalgebruik maakt berichten onnodig zwaar. Korte zinnen, actieve schrijfstijl en een persoonlijke noot maken hetzelfde bericht toegankelijker en vriendelijker — zonder minder professioneel te zijn."
+  },
+  {
+    emoji: "🏠",
+    title: "Nieuwe huisregels",
+    sub: "Het bestuur introduceert nieuwe regels voor het gebruik van gemeenschappelijke ruimtes.",
+    wrong: {
+      label: "❌ Verkeerde toon",
+      text: "U <span class='hl-bad'>moet</span> de gemeenschappelijke ruimtes schoon houden. Het is <span class='hl-bad'>verboden</span> om fietsen in de hal te stallen. Overtreders <span class='hl-bad'>riskeren</span> een boete. <span class='hl-bad'>Ruim uw troep op.</span>"
+    },
+    right: {
+      label: "✓ Goede toon",
+      text: "We <span class='hl-good'>houden samen</span> ons gebouw prettig en schoon. <span class='hl-good'>Houd het netjes</span> in de gemeenschappelijke ruimtes en stall fietsen in de fietsenstalling. Zo <span class='hl-good'>genieten we er allemaal van</span>. Bij herhaalde overlast kunnen we maatregelen nemen."
+    },
+    uitleg: "Regels overbrengen kan ook zonder te commanderen. 'Moet', 'verboden' en 'ruim uw troep op' wekken weerstand. Dezelfde regels in een positieve, wij-toon voelen als gezamenlijke afspraken — niet als bevelen."
+  }
+];
+
+const wordSwaps = [
+  { bad: "U moet", good: "U mag" },
+  { bad: "Kosten voor", good: "Investeren in" },
+  { bad: "Ruim uw rotzooi op", good: "Houd het netjes" },
+  { bad: "Verplicht aanwezig", good: "Van harte uitgenodigd" },
+  { bad: "Verboden", good: "We vragen u om" },
+  { bad: "Hinder", good: "Enige overlast" },
+  { bad: "U dient", good: "We vragen u" },
+  { bad: "Overtreders riskeren", good: "Bij herhaalde overlast" },
+  { bad: "Probleem", good: "Uitdaging" },
+  { bad: "Klacht indienen", good: "Iets melden" },
+];
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let activeScenario = 0;
+let toneState = {}; // { scenarioIdx: 'wrong' | 'right' }
+
+scenarios.forEach((_, i) => toneState[i] = 'wrong');
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+function init() {
+  renderScenarioNav();
+  renderScenario(0);
+  renderWordPills();
+}
+
+// ── SCENARIO NAV ─────────────────────────────────────────────────────────────
+function renderScenarioNav() {
+  const nav = document.getElementById('scenarioNav');
+  nav.innerHTML = scenarios.map((s, i) => `
+    <button class="scenario-btn ${i === 0 ? 'active' : ''}" onclick="switchScenario(${i})">
+      ${s.emoji} ${s.title}
+    </button>
+  `).join('');
+}
+
+function switchScenario(idx) {
+  activeScenario = idx;
+  document.querySelectorAll('.scenario-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  renderScenario(idx);
+}
+
+// ── RENDER SCENARIO ──────────────────────────────────────────────────────────
+function renderScenario(idx) {
+  const s = scenarios[idx];
+  const tone = toneState[idx];
+  const isWrong = tone === 'wrong';
+  const msg = isWrong ? s.wrong : s.right;
+
+  // Calculate pill width for animation
+  const wrongPct = 50;
+
+  document.getElementById('scenarioCard').innerHTML = `
+    <div class="scenario-header">
+      <div class="scenario-emoji">${s.emoji}</div>
+      <div class="scenario-header-text">
+        <h3>${s.title}</h3>
+        <p>${s.sub}</p>
+      </div>
+    </div>
+    <div class="scenario-body">
+      <div class="tone-toggle" id="toneToggle-${idx}">
+        <button class="tone-btn wrong ${isWrong ? 'active' : ''}" onclick="setTone(${idx}, 'wrong')">
+          ❌ Verkeerde toon
+        </button>
+        <button class="tone-btn right ${!isWrong ? 'active' : ''}" onclick="setTone(${idx}, 'right')">
+          ✓ Goede toon
+        </button>
+        <div class="toggle-pill" id="pill-${idx}" style="${getPillStyle(idx)}"></div>
+      </div>
+
+      <div class="message-wrap">
+        <div class="message-bubble ${tone} fade-in">
+          <div class="message-tag ${tone}">${msg.label}</div>
+          <div class="message-text">${msg.text}</div>
+        </div>
+      </div>
+
+      <div class="explanation">
+        <div class="exp-label">💡 Waarom werkt dit?</div>
+        ${s.uitleg}
+      </div>
+    </div>
+  `;
+}
+
+function getPillStyle(idx) {
+  const tone = toneState[idx];
+  // Approximate: wrong = left side, right = right side
+  const translateX = tone === 'wrong' ? '0px' : '100%';
+  return `width: 50%; transform: translateX(${tone === 'right' ? 'calc(100% - 0px)' : '0px'});`;
+}
+
+function setTone(idx, tone) {
+  toneState[idx] = tone;
+  renderScenario(idx);
+}
+
+// ── WORD PILLS ───────────────────────────────────────────────────────────────
+function renderWordPills() {
+  document.getElementById('wordPills').innerHTML = wordSwaps.map(w => `
+    <div class="word-pair">
+      <div class="word-bad">${w.bad}</div>
+      <div class="word-arr">→</div>
+      <div class="word-good">${w.good}</div>
+    </div>
+  `).join('');
+}
+
+init();
+</script>
+</body>
+</html>
