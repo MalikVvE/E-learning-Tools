@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wat bepaalt de keuze? – VvE Belang</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:       #1A2E4A;
+  --navy-mid:   #243d5e;
+  --orange:     #E8693A;
+  --orange-lt:  #f5835a;
+  --cream:      #F7F3EE;
+  --cream-dk:   #EDE7DC;
+  --green:      #2E7D4F;
+  --sky:        #E8F2FA;
+  --sky-dk:     #c8dff0;
+  --text:       #1A2E4A;
+  --muted:      #6B7A8D;
+  --white:      #ffffff;
+  --r:          16px;
+  --r-sm:       10px;
+  --shadow:     0 4px 24px rgba(26,46,74,.10);
+  --shadow-lg:  0 8px 40px rgba(26,46,74,.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--navy);
+  padding: 24px 40px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.logo {
+  width: 42px; height: 42px;
+  background: var(--orange);
+  border-radius: 10px;
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.logo svg { width: 22px; height: 22px; fill: white; }
+.header-copy h1 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: white; line-height: 1.2; }
+.header-copy p  { font-size: .78rem; color: rgba(255,255,255,.55); margin-top: 2px; font-weight: 300; }
+
+/* ── LAYOUT ── */
+.wrap { max-width: 900px; margin: 0 auto; padding: 48px 24px 80px; }
+
+/* ── INTRO ── */
+.intro { margin-bottom: 48px; }
+.kicker {
+  display: inline-block;
+  background: var(--orange); color: white;
+  font-size: .7rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 20px;
+  margin-bottom: 18px;
+}
+.intro h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.2rem; line-height: 1.2;
+  color: var(--navy); margin-bottom: 12px;
+}
+.intro p {
+  font-size: .98rem; color: var(--muted);
+  line-height: 1.7; font-weight: 300;
+  max-width: 560px;
+}
+
+/* ── PROGRESS RING ── */
+.progress-area {
+  display: flex; align-items: center; gap: 20px;
+  margin-bottom: 40px;
+  background: white;
+  border-radius: var(--r);
+  padding: 18px 24px;
+  box-shadow: var(--shadow);
+}
+.ring-wrap { position: relative; width: 64px; height: 64px; flex-shrink: 0; }
+.ring-wrap svg { transform: rotate(-90deg); }
+.ring-bg  { fill: none; stroke: var(--cream-dk); stroke-width: 6; }
+.ring-fill { fill: none; stroke: var(--orange); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset .6s ease; }
+.ring-num {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-size: 1.1rem; font-weight: 600; color: var(--navy);
+}
+.progress-text h3 { font-size: 1rem; font-weight: 600; color: var(--navy); }
+.progress-text p  { font-size: .83rem; color: var(--muted); margin-top: 2px; font-weight: 300; }
+
+/* ── FACTOR GRID ── */
+.factor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.factor-card {
+  background: white;
+  border-radius: var(--r);
+  padding: 0;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  border: 2px solid transparent;
+  overflow: hidden;
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+  position: relative;
+}
+.factor-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.factor-card.active { border-color: var(--navy); }
+.factor-card.done   { border-color: var(--green); }
+
+.card-top {
+  padding: 22px 22px 16px;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.card-emoji { font-size: 2rem; flex-shrink: 0; margin-top: 2px; }
+.card-label { font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.card-title { font-weight: 600; font-size: 1rem; color: var(--navy); line-height: 1.3; }
+
+.card-bar {
+  height: 4px;
+  background: var(--cream-dk);
+  margin: 0 22px 16px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.card-bar-fill {
+  height: 100%;
+  background: var(--orange);
+  border-radius: 2px;
+  width: 0%;
+  transition: width .4s ease;
+}
+.factor-card.done .card-bar-fill { background: var(--green); width: 100% !important; }
+
+.card-done-badge {
+  display: none;
+  position: absolute; top: 12px; right: 12px;
+  background: var(--green); color: white;
+  font-size: .65rem; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 4px;
+}
+.factor-card.done .card-done-badge { display: block; }
+
+/* ── DETAIL PANEL ── */
+.detail-panel {
+  background: white;
+  border-radius: var(--r);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  margin-bottom: 40px;
+  display: none;
+  animation: slideDown .35s ease both;
+}
+.detail-panel.visible { display: block; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.panel-header {
+  background: var(--navy);
+  padding: 28px 32px;
+  display: flex; align-items: center; gap: 18px;
+}
+.panel-emoji { font-size: 2.8rem; }
+.panel-header-text h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: white; line-height: 1.2; margin-bottom: 4px;
+}
+.panel-header-text p { font-size: .88rem; color: rgba(255,255,255,.6); font-weight: 300; line-height: 1.5; }
+
+.panel-body { padding: 32px; }
+
+/* ── TABS ── */
+.tabs {
+  display: flex; gap: 4px;
+  margin-bottom: 28px;
+  background: var(--cream);
+  border-radius: var(--r-sm);
+  padding: 4px;
+}
+.tab {
+  flex: 1;
+  padding: 10px 8px;
+  border: none; border-radius: 8px;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .82rem; font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  text-align: center;
+}
+.tab.active { background: white; color: var(--navy); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.tab:hover:not(.active) { color: var(--navy); }
+
+.tab-content { display: none; }
+.tab-content.active {
+  display: block;
+  animation: fadeIn .25s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── UITLEG TAB ── */
+.uitleg-body { font-size: .95rem; line-height: 1.75; color: #333; font-weight: 300; margin-bottom: 20px; }
+.uitleg-body strong { font-weight: 600; color: var(--navy); }
+
+.highlight-box {
+  background: var(--sky);
+  border-left: 3px solid var(--navy);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: 16px 20px;
+  margin: 20px 0;
+  font-size: .9rem; line-height: 1.65; color: var(--text);
+}
+.highlight-box .hl-label {
+  font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--navy); margin-bottom: 6px;
+}
+
+/* ── VOORBEELDEN TAB ── */
+.example-list { display: flex; flex-direction: column; gap: 12px; }
+
+.example-item {
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  border: 1px solid var(--cream-dk);
+  cursor: pointer;
+  transition: box-shadow .2s;
+}
+.example-item:hover { box-shadow: var(--shadow); }
+
+.example-trigger {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px;
+  background: white;
+}
+.ex-icon { font-size: 1.5rem; flex-shrink: 0; }
+.ex-situation { font-weight: 600; font-size: .92rem; color: var(--navy); }
+.ex-preview { font-size: .8rem; color: var(--muted); margin-top: 2px; font-weight: 300; }
+.ex-arrow {
+  margin-left: auto; flex-shrink: 0;
+  width: 24px; height: 24px;
+  display: grid; place-items: center;
+  color: var(--muted);
+  transition: transform .2s;
+}
+.example-item.open .ex-arrow { transform: rotate(90deg); }
+
+.example-reveal {
+  display: none;
+  padding: 16px 18px 18px;
+  background: var(--cream);
+  border-top: 1px solid var(--cream-dk);
+}
+.example-item.open .example-reveal { display: block; }
+
+.reveal-row {
+  display: flex; gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.reveal-row:last-child { margin-bottom: 0; }
+.reveal-tag {
+  font-size: .68rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px; flex-shrink: 0; margin-top: 1px;
+}
+.tag-fout   { background: #fdecea; color: #c0392b; }
+.tag-goed   { background: #eaf5ee; color: var(--green); }
+.tag-waarom { background: var(--sky); color: var(--navy); }
+.reveal-text { font-size: .85rem; line-height: 1.6; color: #444; font-weight: 300; }
+.reveal-text strong { font-weight: 600; color: var(--navy); }
+
+/* ── CHECK TAB ── */
+.check-intro { font-size: .9rem; color: var(--muted); margin-bottom: 20px; font-weight: 300; line-height: 1.6; }
+
+.check-scenario {
+  background: var(--sky);
+  border-radius: var(--r-sm);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+.check-scenario-label { font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--navy); margin-bottom: 8px; }
+.check-scenario p { font-size: .92rem; line-height: 1.65; color: var(--text); }
+.check-scenario strong { font-weight: 600; }
+
+.check-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+
+.check-opt {
+  background: white;
+  border: 2px solid var(--cream-dk);
+  border-radius: var(--r-sm);
+  padding: 14px 18px;
+  cursor: pointer;
+  font-size: .88rem; font-weight: 400; color: var(--text);
+  transition: border-color .2s, background .2s;
+  text-align: left;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.5;
+}
+.check-opt:hover:not(:disabled) { border-color: var(--orange); }
+.check-opt.correct   { background: #eaf5ee; border-color: var(--green); color: var(--green); font-weight: 600; }
+.check-opt.incorrect { background: #fdecea; border-color: #c0392b; color: #c0392b; }
+.check-opt.disabled-opt { opacity: .5; cursor: default; }
+
+.check-feedback {
+  background: var(--cream);
+  border-radius: var(--r-sm);
+  padding: 16px 18px;
+  font-size: .88rem; line-height: 1.65;
+  display: none;
+}
+.check-feedback.visible { display: block; animation: fadeIn .25s ease; }
+.check-feedback.good { border-left: 3px solid var(--green); }
+.check-feedback.bad  { border-left: 3px solid #E8693A; }
+
+.btn-next-check {
+  display: none;
+  margin-top: 14px;
+  background: var(--navy); color: white;
+  border: none; border-radius: var(--r-sm);
+  padding: 11px 22px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .88rem; font-weight: 500;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-next-check:hover { background: var(--navy-mid); }
+.btn-next-check.visible { display: inline-flex; align-items: center; gap: 8px; }
+
+.check-complete {
+  background: #eaf5ee;
+  border-radius: var(--r-sm);
+  padding: 20px;
+  text-align: center;
+  display: none;
+}
+.check-complete.visible { display: block; animation: fadeIn .3s ease; }
+.check-complete .big-check { font-size: 2.5rem; margin-bottom: 8px; }
+.check-complete h4 { font-weight: 600; color: var(--green); font-size: 1rem; margin-bottom: 4px; }
+.check-complete p  { font-size: .85rem; color: var(--muted); font-weight: 300; }
+
+/* ── DONE BUTTON ── */
+.btn-done {
+  display: none;
+  width: 100%;
+  background: var(--green); color: white;
+  border: none; border-radius: var(--r-sm);
+  padding: 14px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .95rem; font-weight: 600;
+  cursor: pointer;
+  margin-top: 24px;
+  transition: background .2s;
+}
+.btn-done.visible { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-done:hover { background: var(--green); filter: brightness(1.1); }
+
+/* ── COMPLETION SCREEN ── */
+.complete-screen {
+  display: none;
+  background: white;
+  border-radius: var(--r);
+  box-shadow: var(--shadow-lg);
+  padding: 48px 40px;
+  text-align: center;
+  animation: fadeIn .4s ease;
+  margin-bottom: 40px;
+}
+.complete-screen.visible { display: block; }
+.complete-screen .big-emoji { font-size: 3.5rem; margin-bottom: 16px; }
+.complete-screen h2 { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 12px; }
+.complete-screen p { font-size: .95rem; color: var(--muted); line-height: 1.7; font-weight: 300; max-width: 480px; margin: 0 auto 28px; }
+.complete-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 12px; max-width: 560px; margin: 0 auto 28px;
+}
+.complete-item {
+  background: var(--cream);
+  border-radius: var(--r-sm);
+  padding: 14px 10px;
+  font-size: .78rem; color: var(--text);
+  font-weight: 500; line-height: 1.4;
+}
+.complete-item .ci-emoji { font-size: 1.4rem; display: block; margin-bottom: 6px; }
+
+.btn-restart-all {
+  background: var(--navy); color: white;
+  border: none; border-radius: var(--r-sm);
+  padding: 14px 28px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .9rem; font-weight: 600;
+  cursor: pointer;
+  transition: background .2s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-restart-all:hover { background: var(--navy-mid); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 580px) {
+  .header { padding: 18px; }
+  .wrap { padding: 28px 16px 60px; }
+  .factor-grid { grid-template-columns: 1fr; }
+  .intro h2 { font-size: 1.6rem; }
+  .complete-grid { grid-template-columns: repeat(2, 1fr); }
+  .panel-header { padding: 20px; flex-direction: column; }
+  .panel-body { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="none" stroke="white" stroke-width="1.5"/></svg>
+  </div>
+  <div class="header-copy">
+    <h1>Wat bepaalt de keuze?</h1>
+    <p>VvE Belang · E-learning Communicatie in de VvE · Hoofdstuk 2</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="intro">
+    <span class="kicker">Verkennen</span>
+    <h2>Vier factoren die altijd meespelen</h2>
+    <p>Niet elk communicatiemiddel past bij elke boodschap. Vier factoren bepalen welke keuze het best werkt. Verken ze hieronder — op jouw tempo, in jouw volgorde.</p>
+  </div>
+
+  <div class="progress-area">
+    <div class="ring-wrap">
+      <svg viewBox="0 0 64 64" width="64" height="64">
+        <circle class="ring-bg" cx="32" cy="32" r="28"/>
+        <circle class="ring-fill" id="ringFill" cx="32" cy="32" r="28"
+          stroke-dasharray="175.9"
+          stroke-dashoffset="175.9"/>
+      </svg>
+      <div class="ring-num" id="ringNum">0/4</div>
+    </div>
+    <div class="progress-text">
+      <h3 id="progressTitle">Kies een factor om mee te beginnen</h3>
+      <p id="progressSub">Klik op een van de vier kaarten hieronder</p>
+    </div>
+  </div>
+
+  <div class="factor-grid" id="factorGrid">
+
+    <div class="factor-card" id="card-0" onclick="openFactor(0)">
+      <div class="card-top">
+        <div class="card-emoji">⏱️</div>
+        <div>
+          <div class="card-label">Factor 1</div>
+          <div class="card-title">De aard van de boodschap</div>
+        </div>
+      </div>
+      <div class="card-bar"><div class="card-bar-fill" id="bar-0"></div></div>
+      <div class="card-done-badge">✓ Klaar</div>
+    </div>
+
+    <div class="factor-card" id="card-1" onclick="openFactor(1)">
+      <div class="card-top">
+        <div class="card-emoji">👥</div>
+        <div>
+          <div class="card-label">Factor 2</div>
+          <div class="card-title">De ontvangers</div>
+        </div>
+      </div>
+      <div class="card-bar"><div class="card-bar-fill" id="bar-1"></div></div>
+      <div class="card-done-badge">✓ Klaar</div>
+    </div>
+
+    <div class="factor-card" id="card-2" onclick="openFactor(2)">
+      <div class="card-top">
+        <div class="card-emoji">🎯</div>
+        <div>
+          <div class="card-label">Factor 3</div>
+          <div class="card-title">Het doel van de communicatie</div>
+        </div>
+      </div>
+      <div class="card-bar"><div class="card-bar-fill" id="bar-2"></div></div>
+      <div class="card-done-badge">✓ Klaar</div>
+    </div>
+
+    <div class="factor-card" id="card-3" onclick="openFactor(3)">
+      <div class="card-top">
+        <div class="card-emoji">🏢</div>
+        <div>
+          <div class="card-label">Factor 4</div>
+          <div class="card-title">De grootte van de VvE</div>
+        </div>
+      </div>
+      <div class="card-bar"><div class="card-bar-fill" id="bar-3"></div></div>
+      <div class="card-done-badge">✓ Klaar</div>
+    </div>
+
+  </div>
+
+  <div class="detail-panel" id="detailPanel">
+    <div class="panel-header">
+      <div class="panel-emoji" id="panelEmoji">⏱️</div>
+      <div class="panel-header-text">
+        <h2 id="panelTitle">Factor titel</h2>
+        <p id="panelSub">Ondertitel</p>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab(0)">📖 Uitleg</button>
+        <button class="tab" onclick="switchTab(1)">💡 Voorbeelden</button>
+        <button class="tab" onclick="switchTab(2)">✅ Check jezelf</button>
+      </div>
+
+      <div class="tab-content active" id="tab-0"></div>
+      <div class="tab-content" id="tab-1"></div>
+      <div class="tab-content" id="tab-2"></div>
+
+      <button class="btn-done" id="btnDone" onclick="markDone()">
+        <span>Factor begrepen — ga verder</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="complete-screen" id="completeScreen">
+    <div class="big-emoji">🎉</div>
+    <h2>Je kent alle vier de factoren!</h2>
+    <p>Goed gedaan. Nu weet je welke vragen je jezelf moet stellen voordat je een communicatiemiddel kiest. Samengevat:</p>
+    <div class="complete-grid">
+      <div class="complete-item"><span class="ci-emoji">⏱️</span>Hoe urgent en complex is het?</div>
+      <div class="complete-item"><span class="ci-emoji">👥</span>Wie zijn de ontvangers?</div>
+      <div class="complete-item"><span class="ci-emoji">🎯</span>Wat wil je bereiken?</div>
+      <div class="complete-item"><span class="ci-emoji">🏢</span>Hoe groot is de VvE?</div>
+    </div>
+    <button class="btn-restart-all" onclick="restartAll()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
+      Opnieuw verkennen
+    </button>
+  </div>
+
+</main>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+
+const factors = [
+  {
+    emoji: "⏱️",
+    title: "De aard van de boodschap",
+    sub: "Is het urgent? Is het complex? Het karakter van je bericht bepaalt het kanaal.",
+
+    uitleg: `
+      <p class="uitleg-body">Elk bericht heeft een <strong>karakter</strong>. Dat karakter bepaalt via welk kanaal je het het beste kunt sturen. Drie vragen helpen je om dat karakter te bepalen.</p>
+
+      <div class="highlight-box">
+        <div class="hl-label">Vraag 1 — Urgentie</div>
+        Moet iedereen het <strong>nu meteen</strong> weten, of kan het wachten? Een gesprongen waterleiding is anders dan een update over de schilderbeurt die over drie maanden staat.
+      </div>
+
+      <div class="highlight-box">
+        <div class="hl-label">Vraag 2 — Complexiteit</div>
+        Is het een eenvoudig feitje, of is het iets wat <strong>uitleg en discussie</strong> vraagt? Een storing meld je in één zin. Een voorstel voor zonnepanelen vraagt uitleg, een presentatie en ruimte voor vragen.
+      </div>
+
+      <div class="highlight-box">
+        <div class="hl-label">Vraag 3 — Gevoeligheid</div>
+        Gaat het over iets wat mensen raakt? Financieel, persoonlijk, of iets wat weerstand kan oproepen? Gevoelige berichten vragen een <strong>persoonlijker kanaal</strong> — geen anonieme groepsapp.
+      </div>
+
+      <p class="uitleg-body" style="margin-top:20px">De vuistregel: <strong>hoe urgenter, hoe directer het kanaal. Hoe complexer of gevoeliger, hoe meer ruimte voor dialoog je nodig hebt.</strong></p>
+    `,
+
+    voorbeelden: [
+      {
+        icon: "🚨",
+        situation: "De lift is uitgevallen",
+        preview: "Wat stuur je, en hoe snel?",
+        fout: "Een bericht in de maandelijkse nieuwsbrief",
+        fout_why: "Die komt pas over drie weken. Bewoners lopen ondertussen tegen een dichte liftsteur aan.",
+        goed: "Directe WhatsApp-melding + briefje in de hal",
+        goed_why: "Urgent nieuws vraagt een direct kanaal. WhatsApp bereikt iedereen snel; het briefje vangt de bewoners op die hun telefoon niet bij zich hebben."
+      },
+      {
+        icon: "☀️",
+        situation: "Voorstel: zonnepanelen op het dak",
+        preview: "Hoe communiceer je dit plan?",
+        fout: "Eén WhatsApp-berichtje: 'Wie is voor zonnepanelen? 👍 of 👎'",
+        fout_why: "Dit is complex en financieel gevoelig. Mensen hebben uitleg nodig over kosten, subsidies en het effect op hun servicekosten. Eén poll schiet tekort.",
+        goed: "Informatiebrief + bewonersavond + formeel agendapunt op de ALV",
+        goed_why: "Complexe, financieel gevoelige plannen verdienen een gelaagde aanpak: eerst informeren, dan bespreken, dan formeel beslissen."
+      },
+      {
+        icon: "🔑",
+        situation: "Iemand heeft een sleutel gevonden",
+        preview: "Simpel bericht, wat gebruik je?",
+        fout: "Een officiële brief per post",
+        fout_why: "Veel te zwaar voor zo'n licht bericht. De brief arriveert misschien pas als de sleutel al gevonden is.",
+        goed: "WhatsApp of een briefje op het prikbord",
+        goed_why: "Niet urgent, niet complex, niet gevoelig — dan mag het ook simpel en snel."
+      }
+    ],
+
+    checks: [
+      {
+        scenario: "Een bewoner meldt dat er <strong>wateroverlast</strong> is in de kelder. De schade breidt zich uit. Wat is de eerste actie?",
+        options: ["Vermelden in de volgende nieuwsbrief", "Directe WhatsApp naar alle bewoners + eigenaren bellen", "Wachten tot de vergadering volgende maand", "Een formele brief opstellen"],
+        correct: 1,
+        feedback_good: "✓ Precies. Dit is urgent én lokaal — een directe melding via WhatsApp zorgt dat iedereen het snel weet en dat de schade beperkt wordt.",
+        feedback_bad: "Wateroverlast is een urgente situatie. Hoe langer je wacht, hoe groter de schade. Kies altijd het snelste kanaal bij acute problemen."
+      },
+      {
+        scenario: "Het bestuur wil de <strong>servicekosten verhogen</strong> met €15 per maand. Dit raakt alle bewoners financieel. Hoe pak je dit aan?",
+        options: ["Een appje in de WhatsApp-groep sturen", "Alleen op de ALV bespreken zonder aankondiging", "Informatiebrief + toelichting op portaal, gevolgd door ALV-stemming", "Een poll op het prikbord hangen"],
+        correct: 2,
+        feedback_good: "✓ Goed. Financieel gevoelige besluiten vragen een gelaagde aanpak: mensen moeten de kans krijgen om zich in te lezen vóór ze moeten stemmen.",
+        feedback_bad: "Dit is zowel complex als gevoelig. Bewoners hebben recht op uitleg en bedenktijd. Een directe WhatsApp of verrassingsagenda op de ALV zorgt voor weerstand."
+      }
+    ]
+  },
+
+  {
+    emoji: "👥",
+    title: "De ontvangers",
+    sub: "Wie zijn je bewoners? Pas het middel aan bij de mensen — niet andersom.",
+
+    uitleg: `
+      <p class="uitleg-body">Je kunt de perfecte boodschap hebben, maar als je bewoners het kanaal niet kunnen of willen gebruiken, komt je bericht niet aan. Denk daarom altijd na over <strong>wie</strong> je wilt bereiken.</p>
+
+      <div class="highlight-box">
+        <div class="hl-label">Digitale vaardigheid</div>
+        Niet iedereen heeft een smartphone, laptop of internet. Oudere bewoners gebruiken soms liever een brief of een mondelinge toelichting. Vraag altijd eerst of bewoners de benodigde apparaten en vaardigheden hebben, <strong>vóórdat</strong> je investeert in een digitaal platform.
+      </div>
+
+      <div class="highlight-box">
+        <div class="hl-label">Taal en geletterdheid</div>
+        In Nederland zijn 2,5 miljoen mensen laaggeletterd. Daarnaast wonen er in veel complexen bewoners met een andere moedertaal. Platforms met een automatische vertaalfunctie kunnen dan veel werk schelen. Schrijf altijd op <strong>taalniveau B1</strong> — duidelijk en zonder jargon.
+      </div>
+
+      <div class="highlight-box">
+        <div class="hl-label">Groepsgrootte en anonimiteit</div>
+        Bij grote groepen is persoonlijk contact niet altijd haalbaar. Maar bij gevoelige onderwerpen is het soms juist beter om <strong>niet</strong> via een open groepsapp te communiceren — bewoners willen soms reageren zonder dat iedereen het ziet.
+      </div>
+
+      <p class="uitleg-body" style="margin-top:20px">Kort gezegd: <strong>ken je publiek. Pas het middel aan bij de mensen in jouw gebouw, niet bij wat voor jou het makkelijkst is.</strong></p>
+    `,
+
+    voorbeelden: [
+      {
+        icon: "👴",
+        situation: "Veel oudere bewoners in het complex",
+        preview: "De meeste bewoners zijn 70+ en niet digitaal vaardig.",
+        fout: "Alles via het VvE-portaal en e-mail regelen",
+        fout_why: "Als een groot deel van de bewoners geen computer of smartphone gebruikt, bereik je hen simpelweg niet. Je sluit mensen uit van informatie.",
+        goed: "Fysieke brief + optioneel digitaal voor wie dat wil",
+        goed_why: "Bied altijd een alternatief voor wie niet digitaal vaardig is. Een brief per post of een briefje in de brievenbus bereikt iedereen."
+      },
+      {
+        icon: "🌍",
+        situation: "Divers complex met 12 nationaliteiten",
+        preview: "Een groot deel van de bewoners spreekt weinig Nederlands.",
+        fout: "Lange officiële brieven in juridisch Nederlands sturen",
+        fout_why: "Bewoners begrijpen de inhoud niet, raken gefrusteerd en haken af. Dat leidt tot desinteresse en conflicten.",
+        goed: "Platform met vertaalfunctie + eenvoudig taalgebruik (B1)",
+        goed_why: "Veel digitale platforms vertalen automatisch. Zet dit aan. Schrijf daarnaast in eenvoudige, korte zinnen — goed voor iedereen."
+      },
+      {
+        icon: "🏙️",
+        situation: "Groot complex, 80 appartementen",
+        preview: "Je kunt niet iedereen persoonlijk spreken.",
+        fout: "Vertrouwen op mond-tot-mondreclame",
+        fout_why: "Informatie vervormt als die door 10 mensen wordt doorgegeven. Geruchten en misverstanden zijn het gevolg.",
+        goed: "Centraal portaal als bron + directe e-mail voor aankondigingen",
+        goed_why: "In grote VvE's heb je structuur nodig. Eén centrale plek voorkomt dat bewoners conflicterende informatie ontvangen."
+      }
+    ],
+
+    checks: [
+      {
+        scenario: "Je wil een informatieavond aankondigen. <strong>Een derde van de bewoners heeft geen e-mailadres</strong> en gebruikt nooit digitale platformen. Wat doe je?",
+        options: ["Alleen een e-mail sturen en hopen dat ze het horen", "Een combinatie: e-mail + fysiek briefje in elke brievenbus", "De aankondiging alleen op het portaal zetten", "Het mondeling doorgeven aan de buren"],
+        correct: 1,
+        feedback_good: "✓ Precies. Als je weet dat een deel van de bewoners digitaal niet bereikbaar is, combineer je altijd digitale en fysieke kanalen.",
+        feedback_bad: "Als je weet dat een deel van de bewoners geen e-mail gebruikt, mag je dat kanaal niet als enige inzetten. Combineer altijd."
+      },
+      {
+        scenario: "Je hebt een internationaal complex. Je wil een belangrijke beslissing over het onderhoud communiceren. Welke aanpak werkt het best?",
+        options: ["Een lange juridische brief in het Nederlands", "Een duidelijk bericht op B1-niveau op een platform met vertaalfunctie", "Een WhatsApp-berichtje zonder verdere uitleg", "Niets doen, iedereen is toch bij de vergadering"],
+        correct: 1,
+        feedback_good: "✓ Goed. Eenvoudig taalgebruik op B1-niveau is begrijpelijk voor een grote groep mensen. Een vertaalfunctie verlaagt de drempel verder.",
+        feedback_bad: "Juridisch taalgebruik sluit mensen uit. Schrijf altijd op B1-niveau en bied waar mogelijk een vertaling of vertaalfunctie aan."
+      }
+    ]
+  },
+
+  {
+    emoji: "🎯",
+    title: "Het doel van de communicatie",
+    sub: "Informeren, overleggen of beslissen? Drie doelen, drie heel andere middelen.",
+
+    uitleg: `
+      <p class="uitleg-body">Voordat je een middel kiest, moet je weten <strong>wat je wilt bereiken</strong>. Er zijn drie communicatiedoelen die ieder hun eigen aanpak vragen.</p>
+
+      <div class="highlight-box">
+        <div class="hl-label">Doel 1 — Informeren</div>
+        Je wil dat bewoners iets <strong>weten</strong>. Een update over een project, de datum van de vergadering, de stand van het reservefonds. Hier is eenrichtingsverkeer prima: een nieuwsbrief, een bericht op het portaal of een e-mail volstaat.
+      </div>
+
+      <div class="highlight-box">
+        <div class="hl-label">Doel 2 — Overleggen</div>
+        Je wil dat bewoners <strong>meedenken of meepraten</strong>. Hier heb je tweerichtingsverkeer nodig: een bijeenkomst, een forum, een enquête. Je wil weten wat mensen vinden vóór je een besluit neemt.
+      </div>
+
+      <div class="highlight-box">
+        <div class="hl-label">Doel 3 — Beslissen</div>
+        Je wil een formeel, <strong>rechtsgeldig besluit</strong> nemen. Dat kan alleen op één manier: via een officiële vergadering van eigenaars (ALV). Geen poll, geen handjes opsteken in de app, geen e-mailstemming — tenzij de splitsingsakte dat uitdrukkelijk toestaat.
+      </div>
+
+      <p class="uitleg-body" style="margin-top:20px">Belangrijk inzicht: <strong>informatie alleen is vaak niet genoeg.</strong> Mensen kunnen iets weten én positief zijn, en toch niet handelen. Dit heet de <em>intentie-kloof</em>. Om mensen echt in beweging te krijgen, moet je verder gaan dan alleen informeren.</p>
+    `,
+
+    voorbeelden: [
+      {
+        icon: "📰",
+        situation: "Update: de schilderbeurt begint volgende week",
+        preview: "Bewoners hoeven alleen te weten wanneer en wat.",
+        fout: "Een uitgebreide vergadering organiseren",
+        fout_why: "Dit is puur informatief. Een vergadering organiseren kost iedereen tijd en energie — onnodig voor een simpele update.",
+        goed: "Kort bericht via e-mail of portaal",
+        goed_why: "Informeren doe je efficiënt. Geen vergadering nodig als er niets te beslissen of te bespreken valt."
+      },
+      {
+        icon: "🔋",
+        situation: "Onderzoek naar laadpalen",
+        preview: "Het bestuur wil weten of bewoners interesse hebben.",
+        fout: "Het besluit nemen zonder bewoners te raadplegen",
+        fout_why: "Als bewoners niet gevraagd zijn, voelen ze zich overgeslagen. Dat leidt tot weerstand bij de formele stemming.",
+        goed: "Enquête + informatiebijeenkomst",
+        goed_why: "Je wil weten wat mensen vinden en draagvlak opbouwen. Dat vraagt om tweerichtingsverkeer: laat mensen meedenken vóór je beslist."
+      },
+      {
+        icon: "🗳️",
+        situation: "Besluit: verhoging van de servicekosten",
+        preview: "Het bestuur wil dit officieel vaststellen.",
+        fout: "Een poll in de WhatsApp-groep: 'Wie is akkoord? 👍'",
+        fout_why: "WhatsApp-polls zijn niet rechtsgeldig. Een besluit dat zo genomen wordt, kan worden aangevochten.",
+        goed: "Formeel agendapunt op de ALV met stemming",
+        goed_why: "Alle besluiten die de splitsingsakte of het reglement vereisen, moeten via de ALV worden genomen. Geen omwegen."
+      }
+    ],
+
+    checks: [
+      {
+        scenario: "Je wil weten of bewoners interesse hebben in <strong>gezamenlijk energie inkopen</strong>. Je hebt nog niets besloten. Welk middel past het beste?",
+        options: ["Meteen op de ALV stemmen", "Een enquête sturen of een poll op het portaal", "Een persbericht op het prikbord", "Niets doen totdat iemand erom vraagt"],
+        correct: 1,
+        feedback_good: "✓ Klopt. Je wil meningen ophalen, niet beslissen. Een enquête of poll is perfect voor het peilen van interesse zonder formele verplichtingen.",
+        feedback_bad: "Je wil nog niet beslissen, maar verkennen. Een stemming op de ALV is te vroeg. Begin met luisteren via een enquête of poll."
+      },
+      {
+        scenario: "Het reservefonds moet worden aangevuld. Daarvoor is een <strong>eenmalige bijdrage</strong> nodig van alle eigenaars. Hoe beslis je dit rechtsgeldig?",
+        options: ["E-mail rond sturen met 'Wie gaat akkoord?'", "WhatsApp-poll in de bewonersgroep", "Formeel agendapunt op de ALV met stemming conform splitsingsakte", "Het besluit nemen als bestuur zonder bewoners te raadplegen"],
+        correct: 2,
+        feedback_good: "✓ Precies. Financiële verplichtingen voor alle eigenaars kunnen alleen rechtsgeldig worden besloten op een ALV, conform de spelregels van de splitsingsakte.",
+        feedback_bad: "Financiële verplichtingen voor alle eigenaars zijn zo zwaarwegend dat ze altijd via de ALV moeten worden besloten. Informele kanalen zijn niet rechtsgeldig."
+      }
+    ]
+  },
+
+  {
+    emoji: "🏢",
+    title: "De grootte van de VvE",
+    sub: "Vier appartementen of honderd? Schaal bepaalt structuur.",
+
+    uitleg: `
+      <p class="uitleg-body">De grootte van je VvE bepaalt hoeveel <strong>structuur en formalisering</strong> je communicatie nodig heeft. Wat werkt in een kleine VvE kan in een grote juist voor verwarring zorgen — en andersom.</p>
+
+      <div class="highlight-box">
+        <div class="hl-label">Kleine VvE (2–10 eenheden)</div>
+        Persoonlijk contact is de ruggengraat. Je kent elkaar, je spreekt elkaar in de gang. Formele middelen als een eigen portaal of nieuwsbrief zijn vaak overkill. <strong>Voordeel:</strong> snel schakelen. <strong>Valkuil:</strong> afspraken worden niet vastgelegd, waardoor misverstanden later opduiken.
+      </div>
+
+      <div class="highlight-box">
+        <div class="hl-label">Middelgrote VvE (10–40 eenheden)</div>
+        Je kent niet iedereen meer persoonlijk. Structuur wordt belangrijker. Een centrale communicatieplek (portaal of e-maillijst) en duidelijke notulen zijn essentieel. <strong>Voordeel:</strong> nog overzichtelijk. <strong>Valkuil:</strong> ad hoc communicatie via losse appjes zonder centrale plek.
+      </div>
+
+      <div class="highlight-box">
+        <div class="hl-label">Grote VvE (40+ eenheden)</div>
+        Zonder structuur gaat het mis. Je hebt een centraal platform nodig, duidelijke verantwoordelijkheden en een vast communicatieritme. <strong>Voordeel:</strong> veel potentieel voor een actieve community. <strong>Valkuil:</strong> informatie versnippert over WhatsApp, e-mail, portaal en prikbord — niemand weet meer waar de waarheid staat.
+      </div>
+
+      <p class="uitleg-body" style="margin-top:20px">Ongeacht de grootte geldt: <strong>kies één hoofd-communicatiemiddel als centrale plek.</strong> Alles staat daar. Andere kanalen verwijzen er altijd naar terug.</p>
+    `,
+
+    voorbeelden: [
+      {
+        icon: "🏠",
+        situation: "VvE met 4 appartementen",
+        preview: "Iedereen kent elkaar. Is een portaal nodig?",
+        fout: "Een volledig VvE-portaal opzetten met een beheerder",
+        fout_why: "Voor vier mensen is dat veel te veel overhead. Niemand houdt het bij en het wordt verlaten.",
+        goed: "WhatsApp-groepje + gedeeld Google Drive mapje voor documenten",
+        goed_why: "Klein en pragmatisch. Wel: leg afspraken altijd schriftelijk vast, ook al gaat het om vier buren."
+      },
+      {
+        icon: "🏬",
+        situation: "VvE met 60 appartementen",
+        preview: "Hoe zorg je dat iedereen bereikt wordt?",
+        fout: "Vertrouwen op WhatsApp als enige kanaal",
+        fout_why: "Niet iedereen zit in de groep. Berichten verdwijnen in de stroom. Officiële besluiten zijn niet terug te vinden.",
+        goed: "Centraal portaal als hoofd-kanaal + e-mail voor aankondigingen + WhatsApp alleen voor spoed",
+        goed_why: "Één centrale plek voorkomt versnippering. WhatsApp mag er naast bestaan, maar niet als hoofdkanaal voor officiële informatie."
+      },
+      {
+        icon: "🌆",
+        situation: "Nieuw complex, 25 appartementen",
+        preview: "Alles moet nog worden opgezet.",
+        fout: "Beginnen met zeven verschillende kanalen tegelijk",
+        fout_why: "Niemand weet meer waar hij moet zijn. Te veel kanalen leidt tot verwarring en apathie.",
+        goed: "Begin met één kanaal, maak dat gewoon — en breid dan pas uit",
+        goed_why: "Gewoontes vormen kost tijd. Kies eerst één centraal middel dat iedereen gebruikt, en voeg pas later extra kanalen toe als dat nodig blijkt."
+      }
+    ],
+
+    checks: [
+      {
+        scenario: "Je beheert een VvE van <strong>75 appartementen</strong>. Er zijn momenteel 4 actieve WhatsApp-groepen, een e-maillijst én een portaal. Niemand weet waar de officiële informatie staat. Wat is de oplossing?",
+        options: ["Nog een kanaal toevoegen zodat iedereen keuze heeft", "Één hoofd-communicatiemiddel aanwijzen en alle andere kanalen daarnaartoe laten verwijzen", "Alle kanalen tegelijk bijhouden", "Stoppen met digitale communicatie"],
+        correct: 1,
+        feedback_good: "✓ Exact. De kern van het probleem is versnippering. Één centrale plek als gezaghebbende bron — alle andere kanalen spelen een ondersteunende rol.",
+        feedback_bad: "Méér kanalen toevoegen maakt het alleen maar erger. De oplossing is juist minder: kies één hoofd-kanaal en maak dat de vaste plek voor alle officiële informatie."
+      },
+      {
+        scenario: "Een kleine VvE van <strong>6 eenheden</strong> bespreekt alles mondeling in de gang. Afspraken worden nooit opgeschreven. Wat is het risico?",
+        options: ["Geen risico, iedereen weet het toch", "Misverstanden later, want niemand weet meer precies wat er afgesproken was", "Te veel papierwerk voor zo'n kleine groep", "Buren worden te afhankelijk van elkaar"],
+        correct: 1,
+        feedback_good: "✓ Juist. Mondeling werkt prima voor de dagelijkse gang van zaken, maar afspraken over geld, onderhoud of regels moeten altijd worden vastgelegd — hoe klein de VvE ook is.",
+        feedback_bad: "Ook in een kleine VvE is het belangrijk om afspraken vast te leggen. Bij conflicten of bij wisselingen van eigenaar wil je kunnen terugkijken wat er besloten is."
+      }
+    ]
+  }
+];
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+
+let state = {
+  activeIdx: null,
+  activeTab: 0,
+  done: [false, false, false, false],
+  checkState: {} // { factorIdx: { questionIdx, answered, score } }
+};
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+
+function init() {
+  factors.forEach((f, i) => {
+    state.checkState[i] = { questionIdx: 0, answered: false, score: 0 };
+  });
+  updateRing();
+}
+
+// ── OPEN FACTOR ──────────────────────────────────────────────────────────────
+
+function openFactor(idx) {
+  // Update card styles
+  document.querySelectorAll('.factor-card').forEach((c, i) => {
+    c.classList.toggle('active', i === idx);
+  });
+
+  state.activeIdx = idx;
+  state.activeTab = 0;
+
+  const f = factors[idx];
+  document.getElementById('panelEmoji').textContent = f.emoji;
+  document.getElementById('panelTitle').textContent = f.title;
+  document.getElementById('panelSub').textContent = f.sub;
+
+  // Reset tabs
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === 0));
+  document.querySelectorAll('.tab-content').forEach((t, i) => t.classList.toggle('active', i === 0));
+
+  // Render content
+  renderUitleg(idx);
+  renderVoorbeelden(idx);
+  renderCheck(idx);
+
+  // Done button
+  const btn = document.getElementById('btnDone');
+  if (state.done[idx]) {
+    btn.classList.remove('visible');
+  } else {
+    btn.classList.add('visible');
+  }
+
+  // Show panel
+  const panel = document.getElementById('detailPanel');
+  panel.classList.add('visible');
+  panel.style.animation = 'none';
+  panel.offsetHeight; // reflow
+  panel.style.animation = '';
+
+  // Scroll to panel
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+
+  // Update card bar
+  updateCardBar(idx);
+}
+
+// ── RENDER UITLEG ─────────────────────────────────────────────────────────────
+
+function renderUitleg(idx) {
+  document.getElementById('tab-0').innerHTML = factors[idx].uitleg;
+}
+
+// ── RENDER VOORBEELDEN ───────────────────────────────────────────────────────
+
+function renderVoorbeelden(idx) {
+  const ex = factors[idx].voorbeelden;
+  let html = '<div class="example-list">';
+  ex.forEach((e, i) => {
+    html += `
+      <div class="example-item" id="ex-${idx}-${i}">
+        <div class="example-trigger" onclick="toggleExample(${idx},${i})">
+          <div class="ex-icon">${e.icon}</div>
+          <div>
+            <div class="ex-situation">${e.situation}</div>
+            <div class="ex-preview">${e.preview}</div>
+          </div>
+          <div class="ex-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+        <div class="example-reveal">
+          <div class="reveal-row">
+            <span class="reveal-tag tag-fout">❌ Fout</span>
+            <div class="reveal-text">${e.fout}</div>
+          </div>
+          <div class="reveal-row">
+            <span class="reveal-tag tag-waarom">Waarom</span>
+            <div class="reveal-text">${e.fout_why}</div>
+          </div>
+          <div class="reveal-row" style="margin-top:10px">
+            <span class="reveal-tag tag-goed">✓ Goed</span>
+            <div class="reveal-text">${e.goed}</div>
+          </div>
+          <div class="reveal-row">
+            <span class="reveal-tag tag-waarom">Waarom</span>
+            <div class="reveal-text">${e.goed_why}</div>
+          </div>
+        </div>
+      </div>`;
+  });
+  html += '</div>';
+  document.getElementById('tab-1').innerHTML = html;
+}
+
+function toggleExample(fIdx, eIdx) {
+  const el = document.getElementById(`ex-${fIdx}-${eIdx}`);
+  el.classList.toggle('open');
+  updateCardBar(fIdx);
+}
+
+// ── RENDER CHECK ─────────────────────────────────────────────────────────────
+
+function renderCheck(idx) {
+  const cs = state.checkState[idx];
+  const checks = factors[idx].checks;
+
+  if (cs.questionIdx >= checks.length) {
+    renderCheckComplete(idx);
+    return;
+  }
+
+  const q = checks[cs.questionIdx];
+  let html = `
+    <p class="check-intro">Test of je de factor begrijpt. Er zijn ${checks.length} korte scenario's.</p>
+    <div class="check-scenario">
+      <div class="check-scenario-label">Scenario ${cs.questionIdx + 1} van ${checks.length}</div>
+      <p>${q.scenario}</p>
+    </div>
+    <div class="check-options" id="checkOpts-${idx}">`;
+
+  q.options.forEach((opt, i) => {
+    html += `<button class="check-opt" onclick="answerCheck(${idx},${i})">${opt}</button>`;
+  });
+
+  html += `</div>
+    <div class="check-feedback" id="checkFeedback-${idx}"></div>
+    <button class="btn-next-check" id="btnNextCheck-${idx}" onclick="nextCheck(${idx})">
+      Volgende scenario
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>`;
+
+  document.getElementById('tab-2').innerHTML = html;
+}
+
+function answerCheck(fIdx, answerIdx) {
+  const cs = state.checkState[fIdx];
+  const q = factors[fIdx].checks[cs.questionIdx];
+  if (cs.answered) return;
+  cs.answered = true;
+
+  const opts = document.querySelectorAll(`#checkOpts-${fIdx} .check-opt`);
+  opts.forEach((opt, i) => {
+    opt.disabled = true;
+    opt.classList.add('disabled-opt');
+    if (i === q.correct) opt.classList.add('correct');
+    if (i === answerIdx && i !== q.correct) opt.classList.add('incorrect');
+  });
+
+  const isCorrect = answerIdx === q.correct;
+  if (isCorrect) cs.score++;
+
+  const fb = document.getElementById(`checkFeedback-${fIdx}`);
+  fb.textContent = isCorrect ? q.feedback_good : q.feedback_bad;
+  fb.className = 'check-feedback visible ' + (isCorrect ? 'good' : 'bad');
+
+  const checks = factors[fIdx].checks;
+  const btnNext = document.getElementById(`btnNextCheck-${fIdx}`);
+  if (cs.questionIdx + 1 < checks.length) {
+    btnNext.textContent = 'Volgende scenario →';
+    btnNext.classList.add('visible');
+  } else {
+    btnNext.innerHTML = 'Resultaat bekijken <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    btnNext.classList.add('visible');
+  }
+
+  updateCardBar(fIdx);
+}
+
+function nextCheck(fIdx) {
+  const cs = state.checkState[fIdx];
+  cs.questionIdx++;
+  cs.answered = false;
+  renderCheck(fIdx);
+}
+
+function renderCheckComplete(idx) {
+  const cs = state.checkState[idx];
+  const total = factors[idx].checks.length;
+  const score = cs.score;
+
+  let msg = score === total
+    ? "Je hebt alle vragen goed! Je begrijpt deze factor goed."
+    : `Je had ${score} van de ${total} vragen goed. Bekijk de uitleg nog eens als je twijfelt.`;
+
+  document.getElementById('tab-2').innerHTML = `
+    <div class="check-complete visible">
+      <div class="big-check">${score === total ? '🏆' : '✅'}</div>
+      <h4>${score}/${total} goed</h4>
+      <p>${msg}</p>
+    </div>`;
+
+  updateCardBar(idx);
+}
+
+// ── TABS ─────────────────────────────────────────────────────────────────────
+
+function switchTab(idx) {
+  state.activeTab = idx;
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+  document.querySelectorAll('.tab-content').forEach((t, i) => t.classList.toggle('active', i === idx));
+}
+
+// ── CARD BAR PROGRESS ────────────────────────────────────────────────────────
+
+function updateCardBar(idx) {
+  if (state.done[idx]) return;
+  const f = factors[idx];
+  // Count opened examples
+  const exOpen = f.voorbeelden.filter((_, i) => {
+    const el = document.getElementById(`ex-${idx}-${i}`);
+    return el && el.classList.contains('open');
+  }).length;
+  const exTotal = f.voorbeelden.length;
+  // Check progress
+  const cs = state.checkState[idx];
+  const checkTotal = f.checks.length;
+  const checkDone = Math.min(cs.questionIdx, checkTotal);
+
+  // Weight: 40% examples, 60% checks
+  const pct = Math.round(
+    (exOpen / exTotal) * 40 + (checkDone / checkTotal) * 60
+  );
+  const bar = document.getElementById(`bar-${idx}`);
+  if (bar) bar.style.width = pct + '%';
+}
+
+// ── MARK DONE ────────────────────────────────────────────────────────────────
+
+function markDone() {
+  const idx = state.activeIdx;
+  state.done[idx] = true;
+
+  // Update card
+  document.getElementById(`card-${idx}`).classList.add('done');
+  document.getElementById(`card-${idx}`).classList.remove('active');
+  document.getElementById(`bar-${idx}`).style.width = '100%';
+
+  // Hide done button
+  document.getElementById('btnDone').classList.remove('visible');
+
+  // Close panel
+  document.getElementById('detailPanel').classList.remove('visible');
+
+  updateRing();
+  checkAllDone();
+}
+
+// ── RING ─────────────────────────────────────────────────────────────────────
+
+function updateRing() {
+  const count = state.done.filter(Boolean).length;
+  const circumference = 175.9;
+  const offset = circumference - (count / 4) * circumference;
+
+  document.getElementById('ringFill').style.strokeDashoffset = offset;
+  document.getElementById('ringNum').textContent = count + '/4';
+
+  const titles = [
+    "Kies een factor om mee te beginnen",
+    "Goed bezig! Nog 3 te gaan",
+    "Halverwege! Nog 2 te gaan",
+    "Bijna klaar! Nog 1 te gaan",
+    "Alle factoren verkend!"
+  ];
+  const subs = [
+    "Klik op een van de vier kaarten hieronder",
+    "Verken de andere factoren op jouw tempo",
+    "Je bent goed op weg — ga zo door",
+    "Nog één factor, dan ben je klaar",
+    "Je weet nu wat de keuze bepaalt"
+  ];
+
+  document.getElementById('progressTitle').textContent = titles[count];
+  document.getElementById('progressSub').textContent = subs[count];
+}
+
+// ── CHECK ALL DONE ───────────────────────────────────────────────────────────
+
+function checkAllDone() {
+  if (state.done.every(Boolean)) {
+    setTimeout(() => {
+      document.getElementById('completeScreen').classList.add('visible');
+      document.getElementById('completeScreen').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 400);
+  }
+}
+
+// ── RESTART ──────────────────────────────────────────────────────────────────
+
+function restartAll() {
+  state = {
+    activeIdx: null,
+    activeTab: 0,
+    done: [false, false, false, false],
+    checkState: {}
+  };
+  factors.forEach((_, i) => {
+    state.checkState[i] = { questionIdx: 0, answered: false, score: 0 };
+    document.getElementById(`card-${i}`).classList.remove('done', 'active');
+    document.getElementById(`bar-${i}`).style.width = '0%';
+  });
+
+  document.getElementById('detailPanel').classList.remove('visible');
+  document.getElementById('completeScreen').classList.remove('visible');
+
+  updateRing();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── START ─────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
